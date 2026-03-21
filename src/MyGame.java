@@ -34,7 +34,7 @@ public class MyGame extends ApplicationAdapter {
         
         // TODO 3: Instantiate your Player subclass and add it to activeObjects.
 
-        dusk = new Dusk(0, 0, 20);
+        dusk = new Dusk(0, 0, 20,100);
         activeObjects.add(dusk);
 
         weapon = new Weapon( 20, 20, "assets\\fish_pink.png", 10, 0.1);
@@ -42,10 +42,9 @@ public class MyGame extends ApplicationAdapter {
 
         // TODO 4: Write a for-loop to instantiate 5 Enemy objects at different 
         //         starting Y-coordinates and add them to activeObjects.
-        int startingY = 100;
-        for(int i = 0; i < 5; i++){
-            activeObjects.add(new Enemy(400, startingY + (60 * i), 50, 50, "assets\\fish_pink.png"));
-        }
+
+
+            activeObjects.add(new Enemy(50, 50, 50, 50, "assets\\fish_pink.png", 20 ,100));
     }
 
     //render() is the game loop, called approx 60 times per second
@@ -96,13 +95,7 @@ public class MyGame extends ApplicationAdapter {
         // NOTE: If you are removing items from an ArrayList, how must you structure 
         // your for-loop to avoid skipping elements?
 
-        for(int i = activeObjects.size() - 1; i >= 0; i--){
-            if(activeObjects.get(i) instanceof Enemy){
-                if(dusk.getHibox().overlaps(activeObjects.get(i).getHibox())){
-                    activeObjects.remove(i);
-                } 
-            }
-        }
+        //write how to hit thing here
 
     }
     @Override

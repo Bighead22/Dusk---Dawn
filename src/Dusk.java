@@ -7,8 +7,8 @@ public class Dusk extends Player {
     
     
 
-    public Dusk(int x, int y, int speed){
-        super(x, y, 9, 19, "assets\\dusk.png", speed);
+    public Dusk(int x, int y, int speed, int health) {
+        super(x, y, 9, 19, "assets/duskAssets/DuskI.png", speed, health);
     }
 
     @Override
@@ -16,15 +16,15 @@ public class Dusk extends Player {
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             setX(getX() - (getSpeed() * deltaTime));
             
-            walkAnimation("assets\\duskLeftL.png", "assets\\duskLeftR.png");
+            walkAnimation("assets/duskAssets/duskLeftL.png", "assets/duskAssets/duskLeftR.png");
             
         }else if (Gdx.input.isKeyPressed(Input.Keys.D)){
             setX(getX() + (getSpeed() * deltaTime));
             
-            
+             walkAnimation("assets/duskAssets/duskRightL.png", "assets/duskAssets/duskRightR.png");
 
         }else{
-            setTexture("assets\\dusk.png");
+            setTexture("assets/duskAssets/DuskI.png");
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             setY(getY() + (getSpeed() * deltaTime));

@@ -5,11 +5,13 @@ public class Player extends GameObject {
     private double delayCounter = 0;
     private double walkAnimationSpeed;
     private int speed;
+    private int health = 100;
     
-    public Player(int x, int y, int width, int height, String imagePath, int speed){
+    public Player(int x, int y, int width, int height, String imagePath, int speed, int health) {
         super(x, y, width, height, imagePath);
         this.speed = speed;
         this.walkAnimationSpeed = 1.0 / (double) (speed);
+        this.health = health;
     }
 
     public void setSpeed(int speed){
@@ -20,6 +22,12 @@ public class Player extends GameObject {
     }
     public int getSpeed(){
         return speed;
+    }
+    public int getHealth(){
+        return health;
+    }
+    public void setHealth(int health){
+        this.health = health;
     }
 
     public void walkAnimation(String f1, String f2) {
