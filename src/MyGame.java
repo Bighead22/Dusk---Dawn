@@ -8,17 +8,20 @@ import java.util.ArrayList;
 public class MyGame extends ApplicationAdapter {
     private SpriteBatch batch;
     private ArrayList<GameObject> activeObjects;
-    private Player player;
+    private Dusk dusk;
+    private Background background;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         activeObjects = new ArrayList<GameObject>();
-
+        background = new Background(0, 0, 800, 600, "assets\\fish_pink.png");
+        activeObjects.add(background);
         // TODO 3: Instantiate your Player subclass and add it to activeObjects.
 
-        player = new Player(0, 0);
-        activeObjects.add(player);
+        dusk = new Dusk(0, 0);
+        activeObjects.add(dusk);
+        
 
         // TODO 4: Write a for-loop to instantiate 5 Enemy objects at different 
         //         starting Y-coordinates and add them to activeObjects.
@@ -68,7 +71,7 @@ public class MyGame extends ApplicationAdapter {
 
         for(int i = activeObjects.size() - 1; i >= 0; i--){
             if(activeObjects.get(i) instanceof Enemy){
-                if(player.getHibox().overlaps(activeObjects.get(i).getHibox())){
+                if(dusk.getHibox().overlaps(activeObjects.get(i).getHibox())){
                     activeObjects.remove(i);
                 } 
             }

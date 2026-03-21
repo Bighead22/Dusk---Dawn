@@ -1,5 +1,7 @@
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.Texture;
 
 public class Launcher
 {
@@ -9,16 +11,17 @@ public class Launcher
         // (2) creates a new application with game instance and window settings as arguments
         MyGame game = new MyGame();
         Lwjgl3Application launcher = new Lwjgl3Application(game, getDefaultConfiguration());
+        
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         
-        configuration.setTitle("Game Dev");
+    configuration.setTitle("Dusk & Dawn");
 
         //Set window size
         configuration.setWindowedMode(800, 500);
-
+        
         //Set window icon
         configuration.setWindowIcon("assets/libgdx128.png", "assets/libgdx64.png", "assets/libgdx32.png", "assets/libgdx16.png");
         
@@ -35,4 +38,5 @@ public class Launcher
 
         return configuration;
     }
+    
 }

@@ -52,6 +52,12 @@ public class GameObject {
         hitbox.setPosition((int) x, (int) y);
     }
 
+    public void setTexture(String imagePath) {
+    // Dispose of the old texture to prevent memory leaks
+    this.image.dispose(); 
+    this.image = new Texture(imagePath);
+}
+
     /**
      * Draws the object to the screen. 
      */
