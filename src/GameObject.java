@@ -26,6 +26,13 @@ public class GameObject {
 
     // TODO 1: Write getter methods for x, y, and hitbox.
 
+    public int getWidth(){
+        return width;
+    }
+    public int getHeight(){
+        return height;
+    }
+
     public double getX(){
         return x;
     }

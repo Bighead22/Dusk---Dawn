@@ -6,8 +6,8 @@ public class Weapon extends GameObject{
     private double delayCounter = 0;
     private double attackSpeed = 2.0; // 2 seconds
 
-    public Weapon(int x, int y, int width, int height, String imagePath, int damage, double attackSpeed){
-        super(x, y, width, height, imagePath);
+    public Weapon(int width, int height, String imagePath, int damage, double attackSpeed){
+        super(10000, 10000, width, height, imagePath);
         this.damage = damage;
         this.attackSpeed = attackSpeed;
     }
@@ -22,10 +22,11 @@ public class Weapon extends GameObject{
         setX(10000);
         setY(10000);
         if (delayCounter >= attackSpeed) {
-        setX(x);
-        setY(y);
-        delayCounter = 0; 
-    }
+            setX(x);
+            setY(y);
+            delayCounter = 0; 
+        }
         
     }
+
 }

@@ -24,7 +24,7 @@ public class MyGame extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         
-        img = new Texture("assets\\\\backGround.png");
+        img = new Texture("assets\\\\backv2.png");
         float worldWidth = 320; 
         float worldHeight = 180;
         camera = new OrthographicCamera();
@@ -34,9 +34,10 @@ public class MyGame extends ApplicationAdapter {
         
         // TODO 3: Instantiate your Player subclass and add it to activeObjects.
 
-        dusk = new Dusk(0, 0);
+        dusk = new Dusk(0, 0, 20);
         activeObjects.add(dusk);
-        weapon = new Weapon(10000, 10000, 20, 20, "assets\\fish_pink.png", 10, 0.1);
+
+        weapon = new Weapon( 20, 20, "assets\\fish_pink.png", 10, 0.1);
         activeObjects.add(weapon);
 
         // TODO 4: Write a for-loop to instantiate 5 Enemy objects at different 
@@ -70,7 +71,9 @@ public class MyGame extends ApplicationAdapter {
             game.move(deltaTime);
             weapon.Hit((int) dusk.getX(), (int) dusk.getY());
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-                
+                dusk.setSpeed(100);
+            }else{
+                dusk.setSpeed(20);
             }
         }
         
