@@ -20,7 +20,7 @@ public class Launcher
     configuration.setTitle("Dusk & Dawn");
 
         //Set window size
-        configuration.setWindowedMode(800, 500);
+        configuration.setWindowedMode(1280, 720);
         
         //Set window icon
         configuration.setWindowIcon("assets/libgdx128.png", "assets/libgdx64.png", "assets/libgdx32.png", "assets/libgdx16.png");

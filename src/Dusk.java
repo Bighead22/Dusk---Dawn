@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Dusk extends GameObject {
 
-    private int speed = 200;
+    private int speed = 20;
     
     public Dusk(int x, int y){
-        super(x, y, 27, 51, "assets\\dusk.png");
+        super(x, y, 9, 19, "assets\\dusk.png");
         
     }
     
@@ -16,10 +16,7 @@ public class Dusk extends GameObject {
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             setX(getX() - (speed * deltaTime));
             setTexture("assets\\DuskLeft.png");
-        }else{
-            setTexture("assets\\dusk.png");
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)){
+        }else if (Gdx.input.isKeyPressed(Input.Keys.D)){
             setX(getX() + (speed * deltaTime));
             setTexture("assets\\DuskRight.png");
         }else{
