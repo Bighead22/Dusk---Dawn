@@ -2,13 +2,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Dusk extends Player {
+public class Dawn extends Player {
 
     
     
 
-    public Dusk(int x, int y, int speed, int health) {
-        super(x, y, 9, 19, "assets/duskAssets/DuskI.png", speed, health);
+    public Dawn(int x, int y, int speed, int health) {
+        super(x, y, 9, 19, "assets/DawnAssets/DawnI.png", speed, health);
     }
 
     @Override
@@ -16,15 +16,15 @@ public class Dusk extends Player {
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             setX(getX() - (getSpeed() * deltaTime));
             
-            walkAnimation("assets/duskAssets/duskLeftL.png", "assets/duskAssets/duskLeftR.png");
+            walkAnimation("assets/DawnAssets/DawnLeftL.png", "assets/DawnAssets/DawnLeftR.png");
             
         }else if (Gdx.input.isKeyPressed(Input.Keys.D)){
             setX(getX() + (getSpeed() * deltaTime));
             
-             walkAnimation("assets/duskAssets/duskRightL.png", "assets/duskAssets/duskRightR.png");
+             walkAnimation("assets/DawnAssets/DawnRightL.png", "assets/DawnAssets/DawnRightR.png");
 
         }else{
-            setTexture("assets/duskAssets/DuskI.png");
+            setTexture("assets/DawnAssets/DawnI.png");
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             setY(getY() + (getSpeed() * deltaTime));

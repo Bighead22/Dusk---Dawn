@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class MyGame extends ApplicationAdapter {
     private SpriteBatch batch;
     private ArrayList<GameObject> activeObjects;
-    private Dusk dusk;
+    private Dawn dusk;
     private Weapon weapon;
     private FitViewport viewport;
     private OrthographicCamera camera;
@@ -24,7 +24,7 @@ public class MyGame extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         
-        img = new Texture("assets\\\\backv2.png");
+        img = new Texture("assets\\\\backGroundv3.png");
         float worldWidth = 320; 
         float worldHeight = 180;
         camera = new OrthographicCamera();
@@ -34,7 +34,7 @@ public class MyGame extends ApplicationAdapter {
         
         // TODO 3: Instantiate your Player subclass and add it to activeObjects.
 
-        dusk = new Dusk(0, 0, 20,100);
+        dusk = new Dawn(0, 0, 20,100);
         activeObjects.add(dusk);
 
         weapon = new Weapon( 20, 20, "assets\\fish_pink.png", 10, 0.1);

@@ -5,7 +5,7 @@ public class Player extends GameObject {
     private double delayCounter = 0;
     private double walkAnimationSpeed;
     private int speed;
-    private int health = 100;
+    private int health;
     
     public Player(int x, int y, int width, int height, String imagePath, int speed, int health) {
         super(x, y, width, height, imagePath);

@@ -41,7 +41,7 @@ public class GameObject {
         return y;
     }
 
-    public Rectangle getHibox(){
+    public Rectangle getHitbox(){
         return hitbox;
     }
     
