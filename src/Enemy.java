@@ -14,4 +14,10 @@ public class Enemy extends GameObject {
     public void setHealth(int health){
         this.health = health;
     }
+    public void getkilled() {
+        if (Enemy.this.getHealth() <= 0) {
+            Enemy.this.setX(Integer.MAX_VALUE); // Move off-screen
+            Enemy.this.setY(Integer.MAX_VALUE);
+        }
+    }
 }

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -33,16 +32,16 @@ public class MyGame extends ApplicationAdapter {
         
         activeObjects = new ArrayList<GameObject>();
         
-        // TODO 3: Instantiate your Player subclass and add it to activeObjects.
 
         dusk = new Dawn(0, 0, 20,100);
         activeObjects.add(dusk);
 
-        playerWeapon = new PlayerWeapon( 20, 20, "assets\\fish_pink.png", 10, 0.1);
+        playerWeapon = new PlayerWeapon( 25, 25, 10, 20, "assets/Weapon/laserF1.png", "assets/Weapon/laserF2.png");
         activeObjects.add(playerWeapon);
 
-        // TODO 4: Write a for-loop to instantiate 5 Enemy objects at different 
-        //         starting Y-coordinates and add them to activeObjects.
+        
+        // makes enemies and adds them to activeObjects
+
         enemies = new ArrayList<Enemy>();
 
         for (int i = 0; i < 10; i++) {
@@ -61,6 +60,11 @@ public class MyGame extends ApplicationAdapter {
     //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
+        try {
+            Thread.sleep(33); 
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // Boilerplate: Clear the screen to black each frame
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
@@ -68,18 +72,22 @@ public class MyGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // --- AP REVIEW: CASTING ---
-        // Gdx.graphics.getDeltaTime() returns a float. 
-        // We cast it to a double to stay strictly within the AP CSA Java standards.
+      
+
         double deltaTime = ((double) Gdx.graphics.getDeltaTime());
 
-        // --- AP REVIEW: POLYMORPHISM ---
-        // TODO 5: Write a standard or enhanced for-loop to iterate through activeObjects.
-        // For each object, call its move() method.
+       
+
+
+
+        // what happens in the game
 
         for(GameObject game : activeObjects){
             game.move(deltaTime);
+
             playerWeapon.updateAndAttack((int) dusk.getX(), (int) dusk.getY(), enemies);
+            playerWeapon.visualHit((int) dusk.getX(), (int) dusk.getY());
+            enemies.forEach(enemy -> enemy.getkilled());
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                 dusk.setSpeed(100);
             }else{
@@ -99,19 +107,25 @@ public class MyGame extends ApplicationAdapter {
 
         batch.end();
 
-        // --- AP REVIEW: ARRAYLIST TRAVERSAL & REMOVAL ---
-        // TODO 7: Write collision logic. 
-        // You must iterate through the list to check if the player overlaps with enemies.
-        // See the cheat sheet for the overlap method!
-        // NOTE: If you are removing items from an ArrayList, how must you structure 
-        // your for-loop to avoid skipping elements?
-
-        //write how to hit thing here
+        for (int i = activeObjects.size() - 1; i >= 0; i--) {
+            GameObject obj = activeObjects.get(i);
+    
+            // Check if it's past the 20,000 threshold
+            if (obj.getX() > 20000 || obj.getY() > 20000) {
+                activeObjects.remove(i);
+        
+                // 2. If the object was also an Enemy, remove it from the enemies list too
+                if (obj instanceof Enemy) {
+                    enemies.remove((Enemy) obj);
+                }
+            }
+}
 
     }
     @Override
     public void resize(int width, int height) {
     // 3. This is CRITICAL for the stretch to happen
+
     viewport.update(width, height, true); 
     }
     

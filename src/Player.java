@@ -43,6 +43,6 @@ public class Player extends GameObject {
         // Reset the cycle
         delayCounter = 0;
     }
-}
+    }
     
 }

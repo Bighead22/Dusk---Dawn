@@ -4,10 +4,14 @@ public class Weapon extends GameObject{
 
     private int damage;
     private double delayCounter = 0;
-    private double attackSpeed = 2.0; // 2 seconds
+    private double attackSpeed; // 2 seconds
+    private String frame2;
+    private String frame1;
 
-    public Weapon(int width, int height, String imagePath, int damage, double attackSpeed){
-        super(10000, 10000, width, height, imagePath);
+    public Weapon(int width, int height, int damage, double attackSpeed, String frame1, String frame2) {
+        super(10000, 10000, width, height, frame1);
+        this.frame1 = frame1;
+        this.frame2 = frame2;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
     }
@@ -17,16 +21,28 @@ public class Weapon extends GameObject{
     public void setDamage(int damage){
         this.damage = damage;
     }
-    public void Hit(int x, int y){
-        delayCounter += Gdx.graphics.getDeltaTime();
+
+
+    public void visualHit(int x, int y) {
+    delayCounter += Gdx.graphics.getDeltaTime();
+
+    if (delayCounter < attackSpeed / 8) {
+        setX(x-8);
+        setY(y-3);
+        setTexture(frame1);
+    } 
+    else if (delayCounter < attackSpeed / 4) {
+        setX(x-8);
+        setY(y-3);
+        setTexture(frame2);
+    } 
+    else if (delayCounter < attackSpeed) {
         setX(10000);
         setY(10000);
-        if (delayCounter >= attackSpeed) {
-            setX(x);
-            setY(y);
-            delayCounter = 0; 
-        }
-        
+    } 
+    else {
+        delayCounter = 0;
     }
+}
 
 }

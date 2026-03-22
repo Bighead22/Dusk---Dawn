@@ -20,11 +20,11 @@ public class GameObject {
         this.width = width;
         this.height = height;
         this.image = new Texture(imagePath);
-        // AP Review: Casting double to int for the LibGDX Rectangle class
+        
+        
         this.hitbox = new Rectangle((int) x, (int) y, width, height);
     }
 
-    // TODO 1: Write getter methods for x, y, and hitbox.
 
     public int getWidth(){
         return width;
@@ -46,9 +46,8 @@ public class GameObject {
     }
     
 
-    // TODO 2: Write setter methods for x and y. 
-    // HINT: When you change x or y, you MUST also update the hitbox!
-    // Example: hitbox.setPosition((int) newX, (int) newY);
+   
+
     public void setX(double x){
         this.x = x;
         hitbox.setPosition((int) x, (int) y);
@@ -60,23 +59,18 @@ public class GameObject {
     }
 
     public void setTexture(String imagePath) {
-    // Dispose of the old texture to prevent memory leaks
+
     this.image.dispose(); 
     this.image = new Texture(imagePath);
-}
+    }
 
-    /**
-     * Draws the object to the screen. 
-     */
+
     public void draw(SpriteBatch batch) {
         batch.draw(image, (int) x, (int) y, width, height);
     }
 
-    /**
-     * To be overridden by subclasses (Polymorphism).
-     * The default GameObject does not move.
-     */
+
     public void move(double deltaTime) {
-        // Leave blank for subclasses to override!
+
     }
 }
