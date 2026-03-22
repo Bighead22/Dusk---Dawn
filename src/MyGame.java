@@ -15,10 +15,11 @@ public class MyGame extends ApplicationAdapter {
     private SpriteBatch batch;
     private ArrayList<GameObject> activeObjects;
     private Dawn dusk;
-    private Weapon weapon;
+    private PlayerWeapon playerWeapon;
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
+    private ArrayList<Enemy> enemies;
 
     @Override
     public void create() {
@@ -37,14 +38,24 @@ public class MyGame extends ApplicationAdapter {
         dusk = new Dawn(0, 0, 20,100);
         activeObjects.add(dusk);
 
-        weapon = new Weapon( 20, 20, "assets\\fish_pink.png", 10, 0.1);
-        activeObjects.add(weapon);
+        playerWeapon = new PlayerWeapon( 20, 20, "assets\\fish_pink.png", 10, 0.1);
+        activeObjects.add(playerWeapon);
 
         // TODO 4: Write a for-loop to instantiate 5 Enemy objects at different 
         //         starting Y-coordinates and add them to activeObjects.
+        enemies = new ArrayList<Enemy>();
 
-
-            activeObjects.add(new Enemy(50, 50, 50, 50, "assets\\fish_pink.png", 20 ,100));
+        for (int i = 0; i < 10; i++) {
+            // Create an enemy with some offset so they aren't all on top of each other
+            int x = 100 + (i * 60); 
+            int y = 100;
+            
+            Enemy newEnemy = new Enemy(x, y, 50, 50, "assets\\fish_pink.png", 2, 100);
+            
+            // Add the new enemy to the array
+            enemies.add(newEnemy);
+            activeObjects.add(newEnemy);
+        }
     }
 
     //render() is the game loop, called approx 60 times per second
@@ -68,7 +79,7 @@ public class MyGame extends ApplicationAdapter {
 
         for(GameObject game : activeObjects){
             game.move(deltaTime);
-            weapon.Hit((int) dusk.getX(), (int) dusk.getY());
+            playerWeapon.updateAndAttack((int) dusk.getX(), (int) dusk.getY(), enemies);
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                 dusk.setSpeed(100);
             }else{
