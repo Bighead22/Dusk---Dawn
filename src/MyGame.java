@@ -4,8 +4,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 
 import java.util.ArrayList;
 
@@ -13,18 +16,23 @@ import java.util.ArrayList;
 public class MyGame extends ApplicationAdapter {
     private SpriteBatch batch;
     private ArrayList<GameObject> activeObjects;
-    private Dawn dusk;
+    private Player player;
     private PlayerWeapon playerWeapon;
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
     private ArrayList<Enemy> enemies;
+    private BitmapFont font;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        
-        img = new Texture("assets\\\\backGroundv3.png");
+
+        font = new BitmapFont();
+        font.getData().setScale(0.5f);
+        font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+        img = new Texture("assets\\backGroundv3.png");
         float worldWidth = 320; 
         float worldHeight = 180;
         camera = new OrthographicCamera();
@@ -33,10 +41,10 @@ public class MyGame extends ApplicationAdapter {
         activeObjects = new ArrayList<GameObject>();
         
 
-        dusk = new Dawn(0, 0, 20,100);
-        activeObjects.add(dusk);
+        player = new Dawn(0, 0, 20,100);
+        activeObjects.add(player);
 
-        playerWeapon = new PlayerWeapon( 25, 25, 10, 20, "assets/Weapon/laserF1.png", "assets/Weapon/laserF2.png");
+        playerWeapon = new PlayerWeapon( 25, 25, 10, 25, "assets/Weapon/laserF1.png", "assets/Weapon/laserF2.png");
         activeObjects.add(playerWeapon);
 
         
@@ -55,6 +63,8 @@ public class MyGame extends ApplicationAdapter {
             enemies.add(newEnemy);
             activeObjects.add(newEnemy);
         }
+        
+        
     }
 
     //render() is the game loop, called approx 60 times per second
@@ -85,19 +95,23 @@ public class MyGame extends ApplicationAdapter {
         for(GameObject game : activeObjects){
             game.move(deltaTime);
 
-            playerWeapon.updateAndAttack((int) dusk.getX(), (int) dusk.getY(), enemies);
-            playerWeapon.visualHit((int) dusk.getX(), (int) dusk.getY());
+            playerWeapon.updateAndAttack((int) player.getX(), (int) player.getY(), enemies);
+            playerWeapon.visualHit((int) player.getX(), (int) player.getY());
             enemies.forEach(enemy -> enemy.getkilled());
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-                dusk.setSpeed(100);
+                player.setSpeed(100);
             }else{
-                dusk.setSpeed(20);
+                player.setSpeed(20);
             }
         }
         
         
         //Note: Anything drawn must be between .begin() and .end()
         batch.begin();
+
+        
+
+
         batch.draw(img, 0, 0);
         // TODO 6: Write a loop to iterate through activeObjects and call draw(batch).
         for(GameObject game : activeObjects){
@@ -105,6 +119,7 @@ public class MyGame extends ApplicationAdapter {
         }
 
 
+        font.draw(batch, "Hello, LibGDX!", 50, 50);
         batch.end();
 
         for (int i = activeObjects.size() - 1; i >= 0; i--) {
@@ -132,5 +147,6 @@ public class MyGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
+        font.dispose();
     }
 }
