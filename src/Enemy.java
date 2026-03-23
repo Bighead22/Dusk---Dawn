@@ -20,4 +20,25 @@ public class Enemy extends GameObject {
             Enemy.this.setY(Integer.MAX_VALUE);
         }
     }
+    
+    public void move(double deltaTime, Player target){
+        //double distance = Math.sqrt(Math.pow(Math.abs(targetY-getY()), 2.0)+Math.pow(Math.abs(targetX-getX()), 2.0));
+
+        double targetX = target.getX();
+        double targetY = target.getY();
+
+        if(getX()<targetX){
+            setX(getX() + (speed/2 * deltaTime));
+        }
+        if(getY()<targetY){
+            setY(getY() + (speed/2 * deltaTime));
+        }
+        if(getX()>targetX){
+            setX(getX() - (speed/2 * deltaTime));
+        }
+        if(getY()>targetY){
+            setY(getY() - (speed/2 * deltaTime));
+        }
+         
+    }
 }

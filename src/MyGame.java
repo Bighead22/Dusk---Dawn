@@ -18,11 +18,13 @@ public class MyGame extends ApplicationAdapter {
     private ArrayList<GameObject> activeObjects;
     private Player player;
     private PlayerWeapon playerWeapon;
+    private ArrayList<EnemyWeapon> enemyWeapons;
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
     private ArrayList<Enemy> enemies;
     private BitmapFont font;
+    private int framerate = 60;
 
     @Override
     public void create() {
@@ -44,7 +46,7 @@ public class MyGame extends ApplicationAdapter {
         player = new Dawn(0, 0, 20,100);
         activeObjects.add(player);
 
-        playerWeapon = new PlayerWeapon( 25, 25, 10, 25, "assets/Weapon/laserF1.png", "assets/Weapon/laserF2.png");
+        playerWeapon = new PlayerWeapon( 25, 25, 10, 5, "assets/Weapon/laserF1.png", "assets/Weapon/laserF2.png");
         activeObjects.add(playerWeapon);
 
         
@@ -62,6 +64,7 @@ public class MyGame extends ApplicationAdapter {
             // Add the new enemy to the array
             enemies.add(newEnemy);
             activeObjects.add(newEnemy);
+            
         }
         
         
@@ -70,11 +73,7 @@ public class MyGame extends ApplicationAdapter {
     //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
-        try {
-            Thread.sleep(33); 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        
         // Boilerplate: Clear the screen to black each frame
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
@@ -97,7 +96,11 @@ public class MyGame extends ApplicationAdapter {
 
             playerWeapon.updateAndAttack((int) player.getX(), (int) player.getY(), enemies);
             playerWeapon.visualHit((int) player.getX(), (int) player.getY());
+            
+            
             enemies.forEach(enemy -> enemy.getkilled());
+            enemies.forEach(enemy -> enemy.move(deltaTime, player));
+
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                 player.setSpeed(100);
             }else{
@@ -119,20 +122,36 @@ public class MyGame extends ApplicationAdapter {
         }
 
 
-        font.draw(batch, "Hello, LibGDX!", 50, 50);
+        font.draw(batch, "Your Health: " + player.getHealth(), 10, 170);
         batch.end();
 
         for (int i = activeObjects.size() - 1; i >= 0; i--) {
             GameObject obj = activeObjects.get(i);
     
+
             // Check if it's past the 20,000 threshold
-            if (obj.getX() > 20000 || obj.getY() > 20000) {
-                activeObjects.remove(i);
+            // if (obj.getX() > 20000 || obj.getY() > 20000) {
+            //     activeObjects.remove(i);
         
-                // 2. If the object was also an Enemy, remove it from the enemies list too
-                if (obj instanceof Enemy) {
-                    enemies.remove((Enemy) obj);
-                }
+            //     // 2. If the object was also an Enemy, remove it from the enemies list too
+            //     if (obj instanceof Enemy) {
+            //         enemies.remove((Enemy) obj);
+            //     }
+            // }
+
+
+            //loop to wrap objects around the screen
+            if (obj.getX() > 320 && obj.getX() < 600) {
+                obj.setX(0);
+            }
+            if (obj.getY() > 180 && obj.getY() < 600) {
+                obj.setY(0);
+            }
+            if (obj.getY() < 0) {
+                obj.setY(180);
+            }
+            if (obj.getX() < 0) {
+                obj.setX(320);
             }
 }
 
