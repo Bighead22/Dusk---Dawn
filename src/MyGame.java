@@ -276,5 +276,8 @@ public class MyGame extends ApplicationAdapter {
     }
     public void resetGame() {
         // Reset player stats
+        // hud section
+        player.setHealth(150);
+        
     }
 }
