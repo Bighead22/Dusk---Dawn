@@ -14,23 +14,35 @@ import java.util.ArrayList;
 
 
 public class MyGame extends ApplicationAdapter {
+    
+    private ArrayList<GameObject> objectsToAdd = new ArrayList<>();
     private SpriteBatch batch;
     private ArrayList<GameObject> activeObjects;
-    private Player player;
-    private PlayerWeapon playerWeapon;
+    
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
-    private ArrayList<Enemy> enemies;
+    
     private BitmapFont font;
     private int framerate = 60;
     private int randomX = (int)(Math.random() * 320);
     private int randomY = (int)(Math.random() * 180);
-    private int enemyCount = 5;
 
+    private ArrayList<Enemy> enemies;
+    private int enemyCount = 5;
+    private int enemySpeed = 2;
+    private int enemyHealth = 100;
+    private int enemyAttackDamage = 10;
+
+    private Player player;
+    private PlayerWeapon playerWeapon;
     private int health = 250;
     private int score = 0;
     private int level = 0;
+    private int xpThreshold = 100;
+    private int attackDamage = 10;
+    private int attackRange = 35;
+    private int attackCooldown = 10;
     
     private float time = 1.0f;
     
@@ -40,7 +52,7 @@ public class MyGame extends ApplicationAdapter {
         batch = new SpriteBatch();
 
         font = new BitmapFont();
-        font.getData().setScale(0.5f);
+        font.getData().setScale(0.4f);
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
         img = new Texture("assets\\backGroundv4.png");
@@ -55,7 +67,7 @@ public class MyGame extends ApplicationAdapter {
         player = new Dawn(0, 0, 20,health);
         activeObjects.add(player);
 
-        playerWeapon = new PlayerWeapon( 35, 35, 10, 5, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+        playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
         activeObjects.add(playerWeapon);
 
         
@@ -63,18 +75,7 @@ public class MyGame extends ApplicationAdapter {
 
         enemies = new ArrayList<Enemy>();
 
-        for (int i = 0; i < enemyCount; i++) {
-            // Create an enemy with some offset so they aren't all on top of each other
-            randomX = (int)(Math.random() * 320);
-            randomY = (int)(Math.random() * 180);
-
-            Enemy newEnemy = new Enemy(randomX, randomY, 9, 9, "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", 2, 100, 10);
-
-            // Add the new enemy to the array
-            enemies.add(newEnemy);
-            activeObjects.add(newEnemy);
-            
-        }
+        spawnEnemies(enemyCount);
         
         
     }
@@ -82,6 +83,7 @@ public class MyGame extends ApplicationAdapter {
     //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
+        
         
         // Boilerplate: Clear the screen to black each frame
         viewport.apply();
@@ -118,18 +120,36 @@ public class MyGame extends ApplicationAdapter {
             }
 
         }
-        // checks if any enemies are dead and if so, moves them off-screen and adds XP to the player
-        for (Enemy enemy : enemies) {
-            if (enemy.getHealth() <= 0) {
-                enemy.setHealth(100);
-                player.setxP(player.getxP() + 20);
-                if(player.getxP() >= 100){
-                    level++;
 
+
+
+        
+        for (int i = 0; i < enemies.size(); i++) {
+        Enemy enemy = enemies.get(i);
+            
+            if (enemy.getHealth() <= 0) {
+
+                activeObjects.remove(enemy);
+                enemies.remove(i);
+
+                // Reset enemy instead of removing for now to keep it simple
+                enemy.setHealth(100);
+                enemy.setX((float)Math.random() * 320); // Teleport him so he doesn't stay on player
+                enemy.setY((float)Math.random() * 180);
+
+                player.setxP(player.getxP() + 20);
+
+                if (player.getxP() >= xpThreshold) {
+                    level++;
+                    xpThreshold += 20; // Increase threshold for next level
                     player.setxP(0);
+                    LevelUp(); // This calls spawnEnemies which adds to objectsToAdd
                 }
+
             }
         }
+    
+
         
         
         //Note: Anything drawn must be between .begin() and .end()
@@ -146,8 +166,9 @@ public class MyGame extends ApplicationAdapter {
 
 
         // hud section
-        font.draw(batch, "Your Health: " + player.getHealth(), 10, 170);
-        font.draw(batch, "XP: " + player.getxP() + "/100", 10, 160);
+        font.draw(batch, "Your Health: " + player.getHealth(), 5, 175);
+        font.draw(batch, "XP: " + player.getxP() + "/" + xpThreshold, 5, 170);
+        font.draw(batch, "Level: " + level, 5, 165);
 
         batch.end();
 
@@ -155,17 +176,7 @@ public class MyGame extends ApplicationAdapter {
 
         for (int i = activeObjects.size() - 1; i >= 0; i--) {
             GameObject obj = activeObjects.get(i);
-    
 
-            // Check if it's past the 20,000 threshold
-            // if (obj.getX() > 20000 || obj.getY() > 20000) {
-            //     activeObjects.remove(i);
-        
-            //     // 2. If the object was also an Enemy, remove it from the enemies list too
-            //     if (obj instanceof Enemy) {
-            //         enemies.remove((Enemy) obj);
-            //     }
-            // }
 
 
             //loop to wrap objects around the screen
@@ -181,7 +192,11 @@ public class MyGame extends ApplicationAdapter {
             if (obj.getX() < 0) {
                 obj.setX(320);
             }
-}
+        }
+        if (!objectsToAdd.isEmpty()) {
+            activeObjects.addAll(objectsToAdd);
+            objectsToAdd.clear();
+        }
 
     }
     @Override
@@ -196,4 +211,60 @@ public class MyGame extends ApplicationAdapter {
         batch.dispose();
         font.dispose();
     }
+
+    // the HUD methods are here becuese i was lazzy
+    public void LevelUp(){
+            time = 1f;
+            
+            // do this part for the level up selection options
+            // also set time to 0.05
+        
+            enemyCount += 1;
+            enemySpeed += 1;
+            enemyHealth += 20;
+            enemyAttackDamage += 5;
+
+            spawnEnemies(enemyCount);
+            
+        
+    }
+
+    private void spawnEnemies(int count) {
+    for (int i = 0; i < count; i++) {
+        int spawnX = 0;
+        int spawnY = 0;
+        int padding = 30; // How far off-screen they start
+        
+        // Pick a random side: 0=Left, 1=Right, 2=Top, 3=Bottom
+        int side = (int)(Math.random() * 4);
+
+        switch (side) {
+            case 0: // Left side
+                spawnX = -padding;
+                spawnY = (int)(Math.random() * 180);
+                break;
+            case 1: // Right side
+                spawnX = 320 + padding;
+                spawnY = (int)(Math.random() * 180);
+                break;
+            case 2: // Top side
+                spawnX = (int)(Math.random() * 320);
+                spawnY = 180 + padding;
+                break;
+            case 3: // Bottom side
+                spawnX = (int)(Math.random() * 320);
+                spawnY = -padding;
+                break;
+        }
+
+            Enemy newEnemy = new Enemy(spawnX, spawnY, 9, 9, 
+            "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", 
+            "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", 
+            enemySpeed, enemyHealth, enemyAttackDamage);
+
+            enemies.add(newEnemy);
+            objectsToAdd.add(newEnemy); 
+        }
+    }
+
 }
