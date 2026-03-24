@@ -27,13 +27,13 @@ public class Weapon extends GameObject{
     delayCounter += Gdx.graphics.getDeltaTime();
 
     if (delayCounter < attackSpeed / 8) {
-        setX(x-8);
-        setY(y-3);
+        setX(x-13);
+        setY(y-7);
         setTexture(frame1);
     } 
     else if (delayCounter < attackSpeed / 4) {
-        setX(x-8);
-        setY(y-3);
+        setX(x-13);
+        setY(y-7);
         setTexture(frame2);
     } 
     else if (delayCounter < attackSpeed) {

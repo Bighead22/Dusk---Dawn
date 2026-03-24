@@ -18,13 +18,22 @@ public class MyGame extends ApplicationAdapter {
     private ArrayList<GameObject> activeObjects;
     private Player player;
     private PlayerWeapon playerWeapon;
-    private ArrayList<EnemyWeapon> enemyWeapons;
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
     private ArrayList<Enemy> enemies;
     private BitmapFont font;
     private int framerate = 60;
+    private int randomX = (int)(Math.random() * 320);
+    private int randomY = (int)(Math.random() * 180);
+    private int enemyCount = 5;
+
+    private int health = 250;
+    private int score = 0;
+    private int level = 0;
+    
+    private float time = 1.0f;
+    
 
     @Override
     public void create() {
@@ -34,7 +43,7 @@ public class MyGame extends ApplicationAdapter {
         font.getData().setScale(0.5f);
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-        img = new Texture("assets\\backGroundv3.png");
+        img = new Texture("assets\\backGroundv4.png");
         float worldWidth = 320; 
         float worldHeight = 180;
         camera = new OrthographicCamera();
@@ -43,10 +52,10 @@ public class MyGame extends ApplicationAdapter {
         activeObjects = new ArrayList<GameObject>();
         
 
-        player = new Dawn(0, 0, 20,100);
+        player = new Dawn(0, 0, 20,health);
         activeObjects.add(player);
 
-        playerWeapon = new PlayerWeapon( 25, 25, 10, 5, "assets/Weapon/laserF1.png", "assets/Weapon/laserF2.png");
+        playerWeapon = new PlayerWeapon( 35, 35, 10, 5, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
         activeObjects.add(playerWeapon);
 
         
@@ -54,13 +63,13 @@ public class MyGame extends ApplicationAdapter {
 
         enemies = new ArrayList<Enemy>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < enemyCount; i++) {
             // Create an enemy with some offset so they aren't all on top of each other
-            int x = 100 + (i * 60); 
-            int y = 100;
-            
-            Enemy newEnemy = new Enemy(x, y, 50, 50, "assets\\fish_pink.png", 2, 100);
-            
+            randomX = (int)(Math.random() * 320);
+            randomY = (int)(Math.random() * 180);
+
+            Enemy newEnemy = new Enemy(randomX, randomY, 9, 9, "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", 2, 100, 10);
+
             // Add the new enemy to the array
             enemies.add(newEnemy);
             activeObjects.add(newEnemy);
@@ -83,7 +92,7 @@ public class MyGame extends ApplicationAdapter {
 
       
 
-        double deltaTime = ((double) Gdx.graphics.getDeltaTime());
+        double deltaTime = ((double) Gdx.graphics.getDeltaTime() * time);
 
        
 
@@ -100,11 +109,25 @@ public class MyGame extends ApplicationAdapter {
             
             enemies.forEach(enemy -> enemy.getkilled());
             enemies.forEach(enemy -> enemy.move(deltaTime, player));
+            enemies.forEach(enemy -> enemy.attack(player));
 
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                 player.setSpeed(100);
             }else{
                 player.setSpeed(20);
+            }
+
+        }
+        // checks if any enemies are dead and if so, moves them off-screen and adds XP to the player
+        for (Enemy enemy : enemies) {
+            if (enemy.getHealth() <= 0) {
+                enemy.setHealth(100);
+                player.setxP(player.getxP() + 20);
+                if(player.getxP() >= 100){
+                    level++;
+
+                    player.setxP(0);
+                }
             }
         }
         
@@ -122,8 +145,13 @@ public class MyGame extends ApplicationAdapter {
         }
 
 
+        // hud section
         font.draw(batch, "Your Health: " + player.getHealth(), 10, 170);
+        font.draw(batch, "XP: " + player.getxP() + "/100", 10, 160);
+
         batch.end();
+
+
 
         for (int i = activeObjects.size() - 1; i >= 0; i--) {
             GameObject obj = activeObjects.get(i);

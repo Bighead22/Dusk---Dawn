@@ -6,14 +6,21 @@ public class Player extends GameObject {
     private double walkAnimationSpeed;
     private int speed;
     private int health;
+    private int xP;
     
     public Player(int x, int y, int width, int height, String imagePath, int speed, int health) {
         super(x, y, width, height, imagePath);
         this.speed = speed;
         this.walkAnimationSpeed = 1.0 / (double) (speed);
         this.health = health;
+        this.xP=0;
     }
-
+    public int getxP() {
+        return xP;
+    }
+    public void setxP(int xP) {
+        this.xP = xP;
+    }
     public void setSpeed(int speed){
         this.speed = speed;
     }

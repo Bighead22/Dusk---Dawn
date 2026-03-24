@@ -35,8 +35,8 @@ public class PlayerWeapon extends Weapon {
     // 2. Only "Attack" if the cooldown is over
     if (delayCounter >= this.attackSpeed) {
         // Move the weapon to the mouse/player position
-        setX(x-8);
-        setY(y-3);
+        setX(x-13);
+        setY(y-7);
 
         // 3. Check every enemy for a collision
         for (Enemy e : enemies) {
