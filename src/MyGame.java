@@ -139,9 +139,7 @@ public class MyGame extends ApplicationAdapter {
 
             double deltaTime = ((double) Gdx.graphics.getDeltaTime() * time);
 
-            if (isLevelingUp) {
-                LevelUp();
-            }
+
 
             // what happens in the game
             for(GameObject game : activeObjects){
@@ -159,6 +157,40 @@ public class MyGame extends ApplicationAdapter {
                 player.setSpeed(100);
                 }else{
                 player.setSpeed(20);
+                }
+            }
+
+            for (int i = 0; i < enemies.size(); i++){
+                for (int j = 0; j < enemies.size(); j++){
+                    if (i != j) {
+                        Enemy enemy1 = enemies.get(i);
+                        Enemy enemy2 = enemies.get(j);
+                        if (enemy1.getHitbox().overlaps(enemy2.getHitbox())) {
+                            // Simple separation logic: move them apart
+                            float overlapX = (float) (Math.min((float)(enemy1.getX() + enemy1.getWidth()), (float)(enemy2.getX() + enemy2.getWidth())) - Math.max(enemy1.getX(), enemy2.getX()));
+                            float overlapY = (float) (Math.min((float)(enemy1.getY() + enemy1.getHeight()), (float)(enemy2.getY() + enemy2.getHeight())) - Math.max(enemy1.getY(), enemy2.getY()));
+
+                            if (overlapX < overlapY) {
+                                // Move horizontally
+                                if (enemy1.getX() < enemy2.getX()) {
+                                    enemy1.setX(enemy1.getX() - overlapX / 2);
+                                    enemy2.setX(enemy2.getX() + overlapX / 2);
+                                } else {
+                                    enemy1.setX(enemy1.getX() + overlapX / 2);
+                                    enemy2.setX(enemy2.getX() - overlapX / 2);
+                                }
+                            } else {
+                                // Move vertically
+                                if (enemy1.getY() < enemy2.getY()) {
+                                    enemy1.setY(enemy1.getY() - overlapY / 2);
+                                    enemy2.setY(enemy2.getY() + overlapY / 2);
+                                } else {
+                                    enemy1.setY(enemy1.getY() + overlapY / 2);
+                                    enemy2.setY(enemy2.getY() - overlapY / 2);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -203,6 +235,11 @@ public class MyGame extends ApplicationAdapter {
             font.draw(batch, "Level: " + level, 5, 165);
             font.draw(batch, "Damage: " + playerWeapon.getDamage(), 5, 160);
             batch.end();
+
+            if (isLevelingUp) {
+                player.setX(10000);
+                LevelUp();
+            }
 
             for (int i = activeObjects.size() - 1; i >= 0; i--) {
                 GameObject obj = activeObjects.get(i);
@@ -305,6 +342,7 @@ public class MyGame extends ApplicationAdapter {
         }
     }
     if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            player.setX(160);
             level++;
             xpThreshold += 20;
             player.setxP(0);
