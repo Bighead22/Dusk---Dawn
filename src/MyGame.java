@@ -38,14 +38,28 @@ public class MyGame extends ApplicationAdapter {
 
     private Player player;
     private PlayerWeapon playerWeapon;
+
+    private int playerSpeed = 20;
     private int health = 150;
+    private int playerLevelUp = 1;
+
+    private Texture healthUpgradeImg;
+    private Texture SpeedUpgradeImg;
+
     private int score = 0;
     private int level = 0;
     private int xpThreshold = 100;
+
     private int attackDamage = 20;
     private int attackRange = 35;
     private int attackCooldown = 10;
+
     private boolean isLevelingUp = false;
+
+    private Texture WeponUpgradeImg;
+    private Texture WeponSpeedUpgradeImg;
+    private Texture WeponSizeUpgradeImg;
+    private int damageLevelUp = 1;
     
     private float time = 1.0f;
     
@@ -53,6 +67,8 @@ public class MyGame extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
+
+        
 
         font = new BitmapFont();
         font.getData().setScale(0.4f);
@@ -67,7 +83,7 @@ public class MyGame extends ApplicationAdapter {
         activeObjects = new ArrayList<GameObject>();
         
 
-        player = new Dawn(0, 0, 20,health);
+        player = new Dawn(0, 0, playerSpeed,health);
         activeObjects.add(player);
 
         playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
@@ -79,6 +95,12 @@ public class MyGame extends ApplicationAdapter {
         enemies = new ArrayList<Enemy>();
 
         spawnEnemies(enemyCount);
+
+        WeponUpgradeImg = new Texture("assets/upgrades/weponUpgrade.png");
+        WeponSpeedUpgradeImg = new Texture("assets/upgrades/attackSpeed.png");
+        WeponSizeUpgradeImg = new Texture("assets/upgrades/sizeUp.png");
+        healthUpgradeImg = new Texture("assets/upgrades/hpUp.png");
+        SpeedUpgradeImg = new Texture("assets/upgrades/speedUp.png");
         
     }
 
@@ -86,6 +108,7 @@ public class MyGame extends ApplicationAdapter {
     @Override
     public void render() {
         
+        health = player.getHealth();
         
         // Boilerplate: Clear the screen to black each frame
         viewport.apply();
@@ -132,7 +155,7 @@ public class MyGame extends ApplicationAdapter {
                 enemies.forEach(enemy -> enemy.move(deltaTime, player));
                 enemies.forEach(enemy -> enemy.attack(player));
 
-                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                if (Gdx.input.isKeyPressed(Input.Keys.R)){
                 player.setSpeed(100);
                 }else{
                 player.setSpeed(20);
@@ -161,8 +184,15 @@ public class MyGame extends ApplicationAdapter {
                 }
             }
             //Note: Anything drawn must be between .begin() and .end()
+
+
             batch.begin();
             batch.draw(img, 0, 0);
+
+            if (isLevelingUp) {
+                drawLevelUpScreen(); // Call the helper we made above
+            }
+
             // TODO 6: Write a loop to iterate through activeObjects and call draw(batch).
             for(GameObject game : activeObjects){
                 game.draw(batch);
@@ -171,6 +201,7 @@ public class MyGame extends ApplicationAdapter {
             font.draw(batch, "Your Health: " + player.getHealth(), 5, 175);
             font.draw(batch, "XP: " + player.getxP() + "/" + xpThreshold, 5, 170);
             font.draw(batch, "Level: " + level, 5, 165);
+            font.draw(batch, "Damage: " + playerWeapon.getDamage(), 5, 160);
             batch.end();
 
             for (int i = activeObjects.size() - 1; i >= 0; i--) {
@@ -255,23 +286,50 @@ public class MyGame extends ApplicationAdapter {
     
 
     // add the selection screen here
-
-    if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) { // Use isKeyJustPressed to avoid double-triggering
-        level++;
-        xpThreshold += 20;
-        player.setxP(0);
-        
-        // Scale difficulty
-        enemyCount += 1;
-        enemySpeed += 1;
-        enemyHealth += 20;
-        enemyAttackDamage += 5;
-        
-        spawnEnemies(enemyCount);
-        
-        // Reset the game state
-        time = 1.0f;
-        isLevelingUp = false; 
+    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+        if (damageLevelUp == 1) {
+            attackDamage += attackDamage * 0.1;
+        }
+        if (damageLevelUp == 2) {
+            attackCooldown -= attackCooldown * 0.1;
+        }
+        if (damageLevelUp == 3) {
+            attackRange += attackRange * 0.1;
+        }
+    } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        if (damageLevelUp == 1) {
+            health += health * 0.3;
+        }
+        if (damageLevelUp == 2) {
+            playerSpeed += playerSpeed * 0.3;
+        }
+    }
+    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            level++;
+            xpThreshold += 20;
+            player.setxP(0);
+            
+            // Scale difficulty
+            enemyCount += 1;
+            if (level % 3 == 0) { // Every 3 levels, increase enemy speed
+                enemySpeed += 1;
+            }
+            enemyHealth += 20;
+            enemyAttackDamage += 5;
+            
+            spawnEnemies(enemyCount);
+            
+            // Reset the game state
+            time = 1.0f;
+            isLevelingUp = false;
+            player.setHealth(health);
+            playerWeapon.setDamage(attackDamage);
+            playerWeapon.setAttackSpeed(attackCooldown);
+            playerWeapon.setWidth(attackRange);
+            playerWeapon.setHeight(attackRange);
+            player.setSpeed(playerSpeed);
+            damageLevelUp = (int)(Math.random() * 3)+ 1;
+            playerLevelUp = (int)(Math.random() * 2)+ 1;
         }
     }
     public void resetGame() {
@@ -279,5 +337,26 @@ public class MyGame extends ApplicationAdapter {
         // hud section
         player.setHealth(150);
         
+    }
+    private void drawLevelUpScreen() {
+    
+    if (damageLevelUp == 1){
+        batch.draw(WeponUpgradeImg, 160, 90-45); //damge
+    }
+    if (damageLevelUp == 2){
+        batch.draw(WeponSpeedUpgradeImg, 160, 90-45); //size
+    }
+    if (damageLevelUp == 3){
+        batch.draw(WeponSizeUpgradeImg, 160, 90-45); //speed
+    }
+    if (playerLevelUp == 1){
+        batch.draw(healthUpgradeImg, 160-90, 90-45);// health
+    }
+    if (playerLevelUp == 2){
+        batch.draw(SpeedUpgradeImg, 160-90, 90-45);// speed
+    }
+
+    // 3. Draw the text instructions
+    
     }
 }

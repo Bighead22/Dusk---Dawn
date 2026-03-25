@@ -23,6 +23,7 @@ public class PlayerWeapon extends Weapon {
     public double getAttackSpeed() {
         return attackSpeed;
     }
+    
 
 
     public void updateAndAttack(int x, int y, ArrayList<Enemy> enemies) {

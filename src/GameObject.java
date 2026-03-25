@@ -32,6 +32,14 @@ public class GameObject {
     public int getHeight(){
         return height;
     }
+    public void setWidth(int width){
+        this.width = width;
+        hitbox.setSize(width, height);
+    }
+    public void setHeight(int height){
+        this.height = height;
+        hitbox.setSize(width, height);
+    }
 
     public double getX(){
         return x;
