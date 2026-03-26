@@ -109,6 +109,12 @@ public class MyGame extends ApplicationAdapter {
     public void render() {
         
         health = player.getHealth();
+        player.setHealth(health);
+        playerWeapon.setDamage(attackDamage);
+        playerWeapon.setAttackSpeed(attackCooldown);
+        playerWeapon.setWidth(attackRange);
+        playerWeapon.setHeight(attackRange);
+        player.setSpeed(playerSpeed);
         
         // Boilerplate: Clear the screen to black each frame
         viewport.apply();
@@ -128,12 +134,16 @@ public class MyGame extends ApplicationAdapter {
             font.draw(batch, "GAME OVER", 130, 100);
             font.draw(batch, "Press R to Restart", 120, 80);
             batch.end();
+            for (Enemy enemy : enemies) {
+                enemy.setHealth(0); // Stop enemies from moving or attacking
+            }
 
             // Restart logic
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                 // Reset health and state (you might want a full reset method)
                 resetGame();
                 hasGameEnded = false;
+                spawnEnemies(5); // Respawn enemies
             }
         } else {
 
@@ -154,9 +164,9 @@ public class MyGame extends ApplicationAdapter {
                 enemies.forEach(enemy -> enemy.attack(player));
 
                 if (Gdx.input.isKeyPressed(Input.Keys.R)){
-                player.setSpeed(100);
+                    player.setSpeed(100);
                 }else{
-                player.setSpeed(20);
+                    player.setSpeed(20);
                 }
             }
 
@@ -223,6 +233,9 @@ public class MyGame extends ApplicationAdapter {
 
             if (isLevelingUp) {
                 drawLevelUpScreen(); // Call the helper we made above
+                for (Enemy enemy : enemies) {
+                    enemy.setX(2147483647 );
+                }
             }
 
             // TODO 6: Write a loop to iterate through activeObjects and call draw(batch).
@@ -323,7 +336,7 @@ public class MyGame extends ApplicationAdapter {
     
 
     // add the selection screen here
-    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || (Gdx.input.getX() > 640) && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
         if (damageLevelUp == 1) {
             attackDamage += attackDamage * 0.1;
         }
@@ -333,7 +346,7 @@ public class MyGame extends ApplicationAdapter {
         if (damageLevelUp == 3) {
             attackRange += attackRange * 0.1;
         }
-    } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+    } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || (Gdx.input.getX() < 640) && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
         if (damageLevelUp == 1) {
             health += health * 0.3;
         }
@@ -341,7 +354,7 @@ public class MyGame extends ApplicationAdapter {
             playerSpeed += playerSpeed * 0.3;
         }
     }
-    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             player.setX(160);
             level++;
             xpThreshold += 20;
@@ -373,7 +386,17 @@ public class MyGame extends ApplicationAdapter {
     public void resetGame() {
         // Reset player stats
         // hud section
+        level = 0;
+        xpThreshold = 100;
+        score = 0;
+        player.setxP(0);
+        attackDamage = 20;
+        attackCooldown = 10;
+        attackRange = 35;
+        enemyCount = 5;
+        enemySpeed = 2;
         player.setHealth(150);
+        player.setSpeed(20);
         
     }
     private void drawLevelUpScreen() {
