@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 
@@ -60,6 +63,8 @@ public class MyGame extends ApplicationAdapter {
     private Texture WeponSpeedUpgradeImg;
     private Texture WeponSizeUpgradeImg;
     private int damageLevelUp = 1;
+    private int highscore = level;
+    private boolean frame = true;
     
     private float time = 1.0f;
     
@@ -83,7 +88,7 @@ public class MyGame extends ApplicationAdapter {
         activeObjects = new ArrayList<GameObject>();
         
 
-        player = new Dawn(0, 0, playerSpeed,health);
+        player = new Dawn(160, 45, playerSpeed,health);
         activeObjects.add(player);
 
         playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
@@ -107,6 +112,10 @@ public class MyGame extends ApplicationAdapter {
     //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
+
+        if (level > highscore) {
+            highscore = level;
+        }
         
         health = player.getHealth();
         player.setHealth(health);
@@ -124,7 +133,16 @@ public class MyGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (player.getHealth() <= 0) {
+            if (frame) {
+                try {
+                    appendToFile(highscore, "src\\Scores.txt");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                frame = false;
+            }
             hasGameEnded = true;
+            highscore = 0;
         }
 
         if (hasGameEnded) {
@@ -140,6 +158,7 @@ public class MyGame extends ApplicationAdapter {
 
             // Restart logic
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                frame = true;
                 // Reset health and state (you might want a full reset method)
                 resetGame();
                 hasGameEnded = false;
@@ -395,6 +414,7 @@ public class MyGame extends ApplicationAdapter {
         attackRange = 35;
         enemyCount = 5;
         enemySpeed = 2;
+        enemyAttackDamage = 15;
         player.setHealth(150);
         player.setSpeed(20);
         
@@ -419,5 +439,16 @@ public class MyGame extends ApplicationAdapter {
 
     // 3. Draw the text instructions
     
+    }
+    public void appendToFile(int input, String filePath)throws IOException {
+        
+            Files.write(
+                Paths.get(filePath), 
+                (input + System.lineSeparator()).getBytes(), 
+                StandardOpenOption.CREATE, 
+                StandardOpenOption.APPEND
+            );
+            System.out.println("Saved\n");
+        
     }
 }
