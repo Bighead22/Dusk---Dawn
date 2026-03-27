@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -80,5 +82,10 @@ public class GameObject {
 
     public void move(double deltaTime) {
 
+    }
+
+
+    public void ablity(ArrayList<Enemy> enemies, double deltaTime) {
+        
     }
 }

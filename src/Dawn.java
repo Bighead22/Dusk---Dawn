@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
@@ -27,7 +29,18 @@ public class Dawn extends Player {
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             setY(getY() - (getSpeed() * deltaTime));
         }
-
+    }
+    @Override
+    public void ablity(ArrayList<Enemy> enemies,double deltaTime){  
+        if (this.getHealth() > 1) {
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+                this.setHealth(1);
+                for (Enemy e : enemies) {
+                    e.setHealth(-2147483647);
+                    System.out.println("Hit enemy! Health: " + e.getHealth());
+                }
+            }
+        }
     }
 
 }

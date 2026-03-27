@@ -173,6 +173,7 @@ public class MyGame extends ApplicationAdapter {
             // what happens in the game
             for(GameObject game : activeObjects){
                 game.move(deltaTime);
+                player.ablity(enemies, deltaTime);
 
                 playerWeapon.updateAndAttack((int) player.getX(), (int) player.getY(), enemies);
                 playerWeapon.visualHit((int) player.getX(), (int) player.getY());
@@ -182,11 +183,6 @@ public class MyGame extends ApplicationAdapter {
                 enemies.forEach(enemy -> enemy.move(deltaTime, player));
                 enemies.forEach(enemy -> enemy.attack(player));
 
-                if (Gdx.input.isKeyPressed(Input.Keys.R)){
-                    player.setSpeed(100);
-                }else{
-                    player.setSpeed(20);
-                }
             }
 
             for (int i = 0; i < enemies.size(); i++){
@@ -357,7 +353,7 @@ public class MyGame extends ApplicationAdapter {
     // add the selection screen here
     if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || (Gdx.input.getX() > 640) && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
         if (damageLevelUp == 1) {
-            attackDamage += attackDamage * 0.1;
+            attackDamage += (attackDamage * 0.1) + 5;
         }
         if (damageLevelUp == 2) {
             attackCooldown -= attackCooldown * 0.1;
@@ -366,11 +362,11 @@ public class MyGame extends ApplicationAdapter {
             attackRange += attackRange * 0.1;
         }
     } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || (Gdx.input.getX() < 640) && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-        if (damageLevelUp == 1) {
-            health += health * 0.3;
+        if (playerLevelUp == 1) {
+            health += (health * 0.3) + 25;
         }
-        if (damageLevelUp == 2) {
-            playerSpeed += playerSpeed * 0.3;
+        if (playerLevelUp == 2) {
+            playerSpeed += (playerSpeed * 0.3) + 5;
         }
     }
     if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -381,11 +377,12 @@ public class MyGame extends ApplicationAdapter {
             
             // Scale difficulty
             enemyCount += 1;
-            if (level % 3 == 0) { // Every 3 levels, increase enemy speed
+            if (level % 5 == 0) { // Every 5 levels, increase enemy speed
                 enemySpeed += 1;
+                enemyAttackDamage += 20;
             }
-            enemyHealth += 20;
-            enemyAttackDamage += 5;
+            enemyHealth += 15;
+            
             
             spawnEnemies(enemyCount);
             
@@ -414,6 +411,7 @@ public class MyGame extends ApplicationAdapter {
         attackRange = 35;
         enemyCount = 5;
         enemySpeed = 2;
+        enemyHealth = 100;
         enemyAttackDamage = 15;
         player.setHealth(150);
         player.setSpeed(20);

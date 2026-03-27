@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 
 public class Player extends GameObject {
@@ -17,7 +19,7 @@ public class Player extends GameObject {
     }
     public void move(){
     }
-    public void abblity(){
+    public void ablity(ArrayList<Enemy> enemies, double deltaTime){
     }
     public int getxP() {
         return xP;
