@@ -15,6 +15,10 @@ public class Player extends GameObject {
         this.health = health;
         this.xP=0;
     }
+    public void move(){
+    }
+    public void abblity(){
+    }
     public int getxP() {
         return xP;
     }

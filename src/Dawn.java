@@ -14,14 +14,10 @@ public class Dawn extends Player {
     public void move(double deltaTime){
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             setX(getX() - (getSpeed() * deltaTime));
-            
             walkAnimation("assets/DawnAssets/DawnLeftL.png", "assets/DawnAssets/DawnLeftR.png");
-            
         }else if (Gdx.input.isKeyPressed(Input.Keys.D)){
             setX(getX() + (getSpeed() * deltaTime));
-            
              walkAnimation("assets/DawnAssets/DawnRightL.png", "assets/DawnAssets/DawnRightR.png");
-
         }else{
             setTexture("assets/DawnAssets/DawnI.png");
         }

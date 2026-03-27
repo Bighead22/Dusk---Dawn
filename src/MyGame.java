@@ -442,13 +442,12 @@ public class MyGame extends ApplicationAdapter {
     }
     public void appendToFile(int input, String filePath)throws IOException {
         
-            Files.write(
-                Paths.get(filePath), 
-                (input + System.lineSeparator()).getBytes(), 
-                StandardOpenOption.CREATE, 
-                StandardOpenOption.APPEND
-            );
-            System.out.println("Saved\n");
-        
+        Files.write(
+            Paths.get(filePath), 
+            (input + System.lineSeparator()).getBytes(), 
+            StandardOpenOption.CREATE, 
+            StandardOpenOption.APPEND
+        );
+        System.out.println("Saved\n");
     }
 }
