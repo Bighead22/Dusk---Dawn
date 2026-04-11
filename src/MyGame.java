@@ -88,7 +88,7 @@ public class MyGame extends ApplicationAdapter {
         activeObjects = new ArrayList<GameObject>();
         
 
-        player = new Dawn(160, 45, playerSpeed,health);
+        player = new Dusk(160, 45, playerSpeed,health);
         activeObjects.add(player);
 
         playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");

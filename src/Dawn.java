@@ -2,16 +2,21 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Dawn extends Player {
 
-    
+    private Rectangle hitbox;
     
 
     public Dawn(int x, int y, int speed, int health) {
         super(x, y, 9, 19, "assets/DawnAssets/DawnI.png", speed, health);
+        this.hitbox = new Rectangle((int) x, (int) y, 5, 5);
     }
-
+    @Override
+    public Rectangle getHitbox(){
+        return hitbox;
+    }
     @Override
     public void move(double deltaTime){
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
