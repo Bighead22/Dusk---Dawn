@@ -17,15 +17,15 @@ import java.util.ArrayList;
 
 
 public class MyGame extends ApplicationAdapter {
-    
+
     private ArrayList<GameObject> objectsToAdd = new ArrayList<>();
     private SpriteBatch batch;
     private ArrayList<GameObject> activeObjects;
-    
+
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
-    
+
     private BitmapFont font;
     private int framerate = 60;
     private int randomX = (int)(Math.random() * 320);
@@ -65,15 +65,15 @@ public class MyGame extends ApplicationAdapter {
     private int damageLevelUp = 1;
     private int highscore = level;
     private boolean frame = true;
-    
+
     private float time = 1.0f;
-    
+
 
     @Override
     public void create() {
         batch = new SpriteBatch();
 
-        
+
 
         font = new BitmapFont();
         font.getData().setScale(0.4f);
@@ -84,18 +84,18 @@ public class MyGame extends ApplicationAdapter {
         float worldHeight = 180;
         camera = new OrthographicCamera();
         viewport = new FitViewport(worldWidth, worldHeight, camera);
-        
-        activeObjects = new ArrayList<GameObject>();
-        
 
-        player = new Dusk(160, 45, playerSpeed,health);
+        activeObjects = new ArrayList<GameObject>();
+
+
+        player = new Dawn(160, 45, playerSpeed,health);
         player.setHitbox(5);
         activeObjects.add(player);
 
         playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
         activeObjects.add(playerWeapon);
 
-        
+
         // makes enemies and adds them to activeObjects
 
         enemies = new ArrayList<Enemy>();
@@ -107,7 +107,7 @@ public class MyGame extends ApplicationAdapter {
         WeponSizeUpgradeImg = new Texture("assets/upgrades/sizeUp.png");
         healthUpgradeImg = new Texture("assets/upgrades/hpUp.png");
         SpeedUpgradeImg = new Texture("assets/upgrades/speedUp.png");
-        
+
     }
 
     //render() is the game loop, called approx 60 times per second
@@ -117,7 +117,7 @@ public class MyGame extends ApplicationAdapter {
         if (level > highscore) {
             highscore = level;
         }
-        
+
         health = player.getHealth();
         player.setHealth(health);
         playerWeapon.setDamage(attackDamage);
@@ -125,7 +125,7 @@ public class MyGame extends ApplicationAdapter {
         playerWeapon.setWidth(attackRange);
         playerWeapon.setHeight(attackRange);
         player.setSpeed(playerSpeed);
-        
+
         // Boilerplate: Clear the screen to black each frame
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
@@ -178,8 +178,8 @@ public class MyGame extends ApplicationAdapter {
 
                 playerWeapon.updateAndAttack((int) player.getX(), (int) player.getY(), enemies);
                 playerWeapon.visualHit((int) player.getX(), (int) player.getY());
-            
-            
+
+
                 enemies.forEach(enemy -> enemy.getkilled());
                 enemies.forEach(enemy -> enemy.move(deltaTime, player));
                 enemies.forEach(enemy -> enemy.attack(player));
