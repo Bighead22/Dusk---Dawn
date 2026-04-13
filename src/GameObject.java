@@ -42,7 +42,9 @@ public class GameObject {
         this.height = height;
         hitbox.setSize(width, height);
     }
-
+    public void setHitbox(int size){
+        this.hitbox = new Rectangle((int) x+4, (int) y+7, size, size);
+    }
     public double getX(){
         return x;
     }

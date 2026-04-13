@@ -89,6 +89,7 @@ public class MyGame extends ApplicationAdapter {
         
 
         player = new Dusk(160, 45, playerSpeed,health);
+        player.setHitbox(5);
         activeObjects.add(player);
 
         playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");

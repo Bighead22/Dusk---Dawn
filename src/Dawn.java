@@ -6,16 +6,11 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Dawn extends Player {
 
-    private Rectangle hitbox;
-    
+
+
 
     public Dawn(int x, int y, int speed, int health) {
         super(x, y, 9, 19, "assets/DawnAssets/DawnI.png", speed, health);
-        this.hitbox = new Rectangle((int) x, (int) y, 5, 5);
-    }
-    @Override
-    public Rectangle getHitbox(){
-        return hitbox;
     }
     @Override
     public void move(double deltaTime){
@@ -24,7 +19,7 @@ public class Dawn extends Player {
             walkAnimation("assets/DawnAssets/DawnLeftL.png", "assets/DawnAssets/DawnLeftR.png");
         }else if (Gdx.input.isKeyPressed(Input.Keys.D)){
             setX(getX() + (getSpeed() * deltaTime));
-             walkAnimation("assets/DawnAssets/DawnRightL.png", "assets/DawnAssets/DawnRightR.png");
+            walkAnimation("assets/DawnAssets/DawnRightL.png", "assets/DawnAssets/DawnRightR.png");
         }else{
             setTexture("assets/DawnAssets/DawnI.png");
         }
@@ -36,7 +31,7 @@ public class Dawn extends Player {
         }
     }
     @Override
-    public void ablity(ArrayList<Enemy> enemies,double deltaTime){  
+    public void ablity(ArrayList<Enemy> enemies,double deltaTime){
         if (this.getHealth() > 1) {
             if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
                 this.setHealth(1);

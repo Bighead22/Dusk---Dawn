@@ -46,16 +46,16 @@ public class Player extends GameObject {
     public void walkAnimation(String f1, String f2) {
     delayCounter += Gdx.graphics.getDeltaTime();
 
-    if (delayCounter < walkAnimationSpeed) {
-        // First half of the animation
-        setTexture(f1);
-    } else if (delayCounter < walkAnimationSpeed * 2) {
-        // Second half of the animation
-        setTexture(f2);
-    } else {
-        // Reset the cycle
-        delayCounter = 0;
-    }
+        if (delayCounter < walkAnimationSpeed) {
+            // First half of the animation
+            setTexture(f1);
+        } else if (delayCounter < walkAnimationSpeed * 2) {
+            // Second half of the animation
+            setTexture(f2);
+        } else {
+            // Reset the cycle
+            delayCounter = 0;
+        }
     }
     
 }

@@ -14,16 +14,9 @@ public class PlayerWeapon extends Weapon {
     public PlayerWeapon(int width, int height, int damage, double attackSpeed, String frame1, String frame2) {
         super(width, height, damage, attackSpeed, frame1, frame2);
         this.attackSpeed = attackSpeed;
-        
     }
 
-    public void setAttackSpeed(double attackSpeed) {
-        this.attackSpeed = attackSpeed;
-    }
-    public double getAttackSpeed() {
-        return attackSpeed;
-    }
-    
+
 
 
     public void updateAndAttack(int x, int y, ArrayList<Enemy> enemies) {

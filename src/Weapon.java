@@ -21,6 +21,12 @@ public class Weapon extends GameObject{
     public void setDamage(int damage){
         this.damage = damage;
     }
+    public void setAttackSpeed(double attackSpeed) {
+        this.attackSpeed = attackSpeed;
+    }
+    public double getAttackSpeed() {
+        return attackSpeed;
+    }
 
 
     public void visualHit(int x, int y) {
