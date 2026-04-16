@@ -119,7 +119,6 @@ public class MyGame extends ApplicationAdapter {
         if (level > highscore) {
             highscore = level;
         }
-        System.out.println(Gdx.input.getX());
 
         health = player.getHealth();
         player.setHealth(health);
