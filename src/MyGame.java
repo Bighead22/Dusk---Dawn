@@ -40,7 +40,7 @@ public class MyGame extends ApplicationAdapter {
     private int enemyAttackDamage = 15;
 
     private Player player;
-    private PlayerWeapon playerWeapon;
+    private Weapon playerWeapon;
 
     private int playerSpeed = 20;
     private int health = 150;
@@ -55,6 +55,8 @@ public class MyGame extends ApplicationAdapter {
 
     private int attackDamage = 20;
     private int attackRange = 35;
+    //35 dawn
+    //20 dusk
     private int attackCooldown = 10;
 
     private boolean isLevelingUp = false;
@@ -80,7 +82,7 @@ public class MyGame extends ApplicationAdapter {
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
         img = new Texture("assets\\backGroundv4.png");
-        float worldWidth = 320; 
+        float worldWidth = 320;
         float worldHeight = 180;
         camera = new OrthographicCamera();
         viewport = new FitViewport(worldWidth, worldHeight, camera);
@@ -117,6 +119,7 @@ public class MyGame extends ApplicationAdapter {
         if (level > highscore) {
             highscore = level;
         }
+        System.out.println(Gdx.input.getX());
 
         health = player.getHealth();
         player.setHealth(health);

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 
 public class Weapon extends GameObject{
@@ -50,5 +52,7 @@ public class Weapon extends GameObject{
         delayCounter = 0;
     }
 }
+    public void updateAndAttack(int x, int y, ArrayList<Enemy> enemies) {
+    }
 
 }
