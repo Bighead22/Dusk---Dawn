@@ -90,11 +90,11 @@ public class MyGame extends ApplicationAdapter {
         activeObjects = new ArrayList<GameObject>();
 
 
-        player = new Dawn(160, 45, playerSpeed,health);
+        player = new Dusk(160, 45, playerSpeed,health);
         player.setHitbox(5);
         activeObjects.add(player);
 
-        playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+        playerWeapon = new DuskWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
         activeObjects.add(playerWeapon);
 
 
@@ -115,7 +115,7 @@ public class MyGame extends ApplicationAdapter {
     //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
-
+        
         if (level > highscore) {
             highscore = level;
         }
