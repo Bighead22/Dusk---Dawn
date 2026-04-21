@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class Dusk extends Player{
 
     public Dusk(int x, int y, int speed, int health) {
-        super(x, y, 8, 19, "assets/DuskAssets/DuskI.png", speed, health);
+        super(x, y, 9, 19, "assets/DuskAssets/DuskI.png", speed, health);
     }
     @Override
     public void move(double deltaTime){

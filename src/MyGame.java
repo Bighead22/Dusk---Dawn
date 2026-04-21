@@ -351,10 +351,9 @@ public class MyGame extends ApplicationAdapter {
 
     // the HUD methods are here becuese i was lazzy
     public void LevelUp() {
-    
 
     // add the selection screen here
-    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || (Gdx.input.getX() > 640) && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || (Gdx.input.getX() > 640) && Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
         if (damageLevelUp == 1) {
             attackDamage += (attackDamage * 0.1) + 5;
         }
@@ -364,7 +363,7 @@ public class MyGame extends ApplicationAdapter {
         if (damageLevelUp == 3) {
             attackRange += attackRange * 0.1;
         }
-    } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || (Gdx.input.getX() < 640) && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+    } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || (Gdx.input.getX() < 640) && Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
         if (playerLevelUp == 1) {
             health += (health * 0.3) + 25;
         }
@@ -372,7 +371,7 @@ public class MyGame extends ApplicationAdapter {
             playerSpeed += (playerSpeed * 0.3) + 5;
         }
     }
-    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             player.setX(160);
             level++;
             xpThreshold += 20;
