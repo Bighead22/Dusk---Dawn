@@ -57,7 +57,7 @@ public class MyGame extends ApplicationAdapter {
     private int level = 0;
     private int xpThreshold = 100;
 
-    private int attackDamage = 20;
+    private int attackDamage = 5;
     private int attackRange = 35;
     //35 dawn
     //20 dusk
@@ -157,6 +157,8 @@ public class MyGame extends ApplicationAdapter {
                 isDusk = false;
                 activeObjects.remove(player);
                 player = new Dawn(160, 45, playerSpeed, health);
+                player.setHealth(300);
+                attackDamage = 50;
                 player.setHitbox(5);
                 activeObjects.add(player);
 

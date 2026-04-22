@@ -53,7 +53,7 @@ public class DuskWeapon extends Weapon {
                 setY(y-7);
                 for (Enemy e : enemies) {
                     if (this.getHitbox().overlaps(e.getHitbox())) {
-                        e.setHealth(e.getHealth() - this.getDamage()/15);
+                        e.setHealth(e.getHealth() - this.getDamage());
                         System.out.println("Hit enemy! Health: " + e.getHealth());
 
                     }
