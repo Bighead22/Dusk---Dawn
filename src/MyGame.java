@@ -25,13 +25,17 @@ public class MyGame extends ApplicationAdapter {
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Texture img;
+    private Texture startS;
+    private Texture selc;
 
     private BitmapFont font;
-    private int framerate = 60;
+    private int framerate = 20;
     private int randomX = (int)(Math.random() * 320);
     private int randomY = (int)(Math.random() * 180);
     private boolean hasGameStarted = false;
+    private boolean hasCharacterSelected = false;
     private boolean hasGameEnded = false;
+    private boolean hasStart = false;
 
     private ArrayList<Enemy> enemies;
     private int enemyCount = 5;
@@ -82,6 +86,9 @@ public class MyGame extends ApplicationAdapter {
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
         img = new Texture("assets\\backGroundv4.png");
+        startS = new Texture("assets\\StartScreen.png");
+        selc = new Texture("assets/SScreen.png"); // your SScreen.png
+
         float worldWidth = 320;
         float worldHeight = 180;
         camera = new OrthographicCamera();
@@ -115,6 +122,64 @@ public class MyGame extends ApplicationAdapter {
     //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
+        viewport.apply();
+        batch.setProjectionMatrix(camera.combined);
+        Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // STATE 1: Start Screen
+        if (!hasGameStarted) {
+            batch.begin();
+            batch.draw(startS, 0, 0);
+            try {
+                font.draw(batch, "Current High Score: " + getHighScore("src\\Scores.txt"), 130, 10);
+                font.draw(batch, "Press ENTER to Start", 130, 5);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            batch.end();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                hasGameStarted = true;
+            }
+            return;
+        }
+
+        // STATE 2: Character Select Screen
+        if (!hasCharacterSelected) {
+            batch.begin();
+            batch.draw(selc, 0, 0);
+            batch.end();
+
+            // Left side = Dusk, Right side = Dawn
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A) || (Gdx.input.getX() < 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
+                // Dusk is already created in create(), nothing to change
+                hasCharacterSelected = true;
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D) || (Gdx.input.getX() > 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
+                // Swap player to Dawn
+                activeObjects.remove(player);
+                player = new Dawn(160, 45, playerSpeed, health);
+                player.setHitbox(5);
+                activeObjects.add(player);
+
+                activeObjects.remove(playerWeapon);
+                playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+                activeObjects.add(playerWeapon);
+
+                hasCharacterSelected = true;
+            }
+            return;
+        }
+        //starting logic
+
+
+        
+        try {
+            Thread.sleep((1/framerate) * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); 
+        }
         
         if (level > highscore) {
             highscore = level;
@@ -404,6 +469,8 @@ public class MyGame extends ApplicationAdapter {
     public void resetGame() {
         // Reset player stats
         // hud section
+        hasGameStarted = false;
+        hasCharacterSelected = false;
         level = 0;
         xpThreshold = 100;
         score = 0;
@@ -417,6 +484,8 @@ public class MyGame extends ApplicationAdapter {
         enemyAttackDamage = 15;
         player.setHealth(150);
         player.setSpeed(20);
+        hasGameStarted = false; // optional — remove if you want R to skip the start screen
+        hasGameEnded = false;
         
     }
     private void drawLevelUpScreen() {
@@ -449,5 +518,21 @@ public class MyGame extends ApplicationAdapter {
             StandardOpenOption.APPEND
         );
         System.out.println("Saved\n");
+    }
+    public int getHighScore(String filePath) throws IOException {
+        String content = new String(Files.readAllBytes(Paths.get(filePath)));
+        String[] lines = content.split(System.lineSeparator());
+        int maxScore = 0;
+        for (String line : lines) {
+            try {
+                int score = Integer.parseInt(line.trim());
+                if (score > maxScore) {
+                    maxScore = score;
+                }
+            } catch (NumberFormatException e) {
+                // Skip lines that aren't valid integers
+            }
+        }
+        return maxScore;
     }
 }

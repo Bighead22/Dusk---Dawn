@@ -1,18 +1,17 @@
 ## Getting Started
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Welcome to Dusk & Dawn in is a top down 2D roguelite.
 
-## Folder Structure
+## Controls
 
-The workspace contains two folders by default, where:
+Depeneding on player dawn will atack autmiaticly while dusk you need to left click.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Dawns ablity will kill all enemys but set you hp to one while dusk lets you dash in the driection that you are facing.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+To start press enter to restart press r all other screens you can select with right click or arrows.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## How to Play
 
-## Dependency Management
+Once you have selected your player you will have do waves were after the end of each wave you can select a upgrade but the enemys will hit harder and have more health.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Have Fun

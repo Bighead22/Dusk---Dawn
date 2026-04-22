@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
@@ -23,6 +25,16 @@ public class Dusk extends Player{
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             setY(getY() - (getSpeed() * deltaTime));
+        }
+    }
+    @Override
+    public void ablity(ArrayList<Enemy> enemies,double deltaTime){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.A)){
+            setTexture("assets/DuskAssets/DuskDashL.png");
+            setX(getX() - 5);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.D)){
+            setTexture("assets/DuskAssets/DuskDashR.png");
+            setX(getX() + 5);
         }
     }
 

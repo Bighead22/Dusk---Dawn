@@ -14,7 +14,7 @@ public class Player extends GameObject {
         this.speed = speed;
         this.walkAnimationSpeed = 1.0 / (double) (speed);
         this.health = health;
-        this.xP=0;
+        this.xP = 0;
     }
     public void move(){
     }
