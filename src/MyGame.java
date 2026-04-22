@@ -72,6 +72,9 @@ public class MyGame extends ApplicationAdapter {
     private int highscore = level;
     private boolean frame = true;
 
+    // Track which character was last chosen so resetGame can recreate the right one
+    private boolean isDusk = true;
+
     private float time = 1.0f;
 
 
@@ -79,15 +82,13 @@ public class MyGame extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
 
-
-
         font = new BitmapFont();
         font.getData().setScale(0.4f);
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
         img = new Texture("assets\\backGroundv4.png");
         startS = new Texture("assets\\StartScreen.png");
-        selc = new Texture("assets/SScreen.png"); // your SScreen.png
+        selc = new Texture("assets/SScreen.png");
 
         float worldWidth = 320;
         float worldHeight = 180;
@@ -95,31 +96,25 @@ public class MyGame extends ApplicationAdapter {
         viewport = new FitViewport(worldWidth, worldHeight, camera);
 
         activeObjects = new ArrayList<GameObject>();
+        enemies = new ArrayList<Enemy>();
 
-
-        player = new Dusk(160, 45, playerSpeed,health);
+        player = new Dusk(160, 45, playerSpeed, health);
         player.setHitbox(5);
         activeObjects.add(player);
 
-        playerWeapon = new DuskWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+        playerWeapon = new DuskWeapon(attackRange, attackRange, attackDamage, attackCooldown,
+            "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
         activeObjects.add(playerWeapon);
-
-
-        // makes enemies and adds them to activeObjects
-
-        enemies = new ArrayList<Enemy>();
 
         spawnEnemies(enemyCount);
 
-        WeponUpgradeImg = new Texture("assets/upgrades/weponUpgrade.png");
+        WeponUpgradeImg      = new Texture("assets/upgrades/weponUpgrade.png");
         WeponSpeedUpgradeImg = new Texture("assets/upgrades/attackSpeed.png");
-        WeponSizeUpgradeImg = new Texture("assets/upgrades/sizeUp.png");
-        healthUpgradeImg = new Texture("assets/upgrades/hpUp.png");
-        SpeedUpgradeImg = new Texture("assets/upgrades/speedUp.png");
-
+        WeponSizeUpgradeImg  = new Texture("assets/upgrades/sizeUp.png");
+        healthUpgradeImg     = new Texture("assets/upgrades/hpUp.png");
+        SpeedUpgradeImg      = new Texture("assets/upgrades/speedUp.png");
     }
 
-    //render() is the game loop, called approx 60 times per second
     @Override
     public void render() {
         viewport.apply();
@@ -135,7 +130,6 @@ public class MyGame extends ApplicationAdapter {
                 font.draw(batch, "Current High Score: " + getHighScore("src\\Scores.txt"), 130, 10);
                 font.draw(batch, "Press ENTER to Start", 130, 5);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             batch.end();
@@ -151,36 +145,38 @@ public class MyGame extends ApplicationAdapter {
             batch.draw(selc, 0, 0);
             batch.end();
 
-            // Left side = Dusk, Right side = Dawn
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A) || (Gdx.input.getX() < 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
-                // Dusk is already created in create(), nothing to change
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A) ||
+               (Gdx.input.getX() < 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
+                // Dusk
+                isDusk = true;
                 hasCharacterSelected = true;
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D) || (Gdx.input.getX() > 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
-                // Swap player to Dawn
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D) ||
+               (Gdx.input.getX() > 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
+                // Dawn — swap player and weapon
+                isDusk = false;
                 activeObjects.remove(player);
                 player = new Dawn(160, 45, playerSpeed, health);
                 player.setHitbox(5);
                 activeObjects.add(player);
 
                 activeObjects.remove(playerWeapon);
-                playerWeapon = new PlayerWeapon( attackRange, attackRange, attackDamage, attackCooldown, "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+                playerWeapon = new PlayerWeapon(attackRange, attackRange, attackDamage, attackCooldown,
+                    "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
                 activeObjects.add(playerWeapon);
 
                 hasCharacterSelected = true;
             }
             return;
         }
-        //starting logic
 
-
-        
+        // Frame-rate limiter
         try {
-            Thread.sleep((1/framerate) * 1000);
+            Thread.sleep((1 / framerate) * 1000);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); 
+            Thread.currentThread().interrupt();
         }
-        
+
         if (level > highscore) {
             highscore = level;
         }
@@ -193,13 +189,12 @@ public class MyGame extends ApplicationAdapter {
         playerWeapon.setHeight(attackRange);
         player.setSpeed(playerSpeed);
 
-        // Boilerplate: Clear the screen to black each frame
         viewport.apply();
         batch.setProjectionMatrix(camera.combined);
-
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Save high score once on death
         if (player.getHealth() <= 0) {
             if (frame) {
                 try {
@@ -214,57 +209,49 @@ public class MyGame extends ApplicationAdapter {
         }
 
         if (hasGameEnded) {
-            // 3. Draw Lose Screen
             batch.begin();
-            batch.draw(img, 0, 0); // Draw background
+            batch.draw(img, 0, 0);
             font.draw(batch, "GAME OVER", 130, 100);
             font.draw(batch, "Press R to Restart", 120, 80);
             batch.end();
+
             for (Enemy enemy : enemies) {
-                enemy.setHealth(0); // Stop enemies from moving or attacking
+                enemy.setHealth(0);
             }
 
-            // Restart logic
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-                frame = true;
-                // Reset health and state (you might want a full reset method)
                 resetGame();
-                hasGameEnded = false;
-                spawnEnemies(5); // Respawn enemies
             }
+
         } else {
 
             double deltaTime = ((double) Gdx.graphics.getDeltaTime() * time);
 
-
-
-            // what happens in the game
-            for(GameObject game : activeObjects){
+            for (GameObject game : activeObjects) {
                 game.move(deltaTime);
                 player.ablity(enemies, deltaTime);
 
                 playerWeapon.updateAndAttack((int) player.getX(), (int) player.getY(), enemies);
                 playerWeapon.visualHit((int) player.getX(), (int) player.getY());
 
-
                 enemies.forEach(enemy -> enemy.getkilled());
                 enemies.forEach(enemy -> enemy.move(deltaTime, player));
                 enemies.forEach(enemy -> enemy.attack(player));
-
             }
 
-            for (int i = 0; i < enemies.size(); i++){
-                for (int j = 0; j < enemies.size(); j++){
+            // Enemy-enemy separation
+            for (int i = 0; i < enemies.size(); i++) {
+                for (int j = 0; j < enemies.size(); j++) {
                     if (i != j) {
                         Enemy enemy1 = enemies.get(i);
                         Enemy enemy2 = enemies.get(j);
                         if (enemy1.getHitbox().overlaps(enemy2.getHitbox())) {
-                            // Simple separation logic: move them apart
-                            float overlapX = (float) (Math.min((float)(enemy1.getX() + enemy1.getWidth()), (float)(enemy2.getX() + enemy2.getWidth())) - Math.max(enemy1.getX(), enemy2.getX()));
-                            float overlapY = (float) (Math.min((float)(enemy1.getY() + enemy1.getHeight()), (float)(enemy2.getY() + enemy2.getHeight())) - Math.max(enemy1.getY(), enemy2.getY()));
+                            float overlapX = (float)(Math.min(enemy1.getX() + enemy1.getWidth(),  enemy2.getX() + enemy2.getWidth())
+                                                   - Math.max(enemy1.getX(), enemy2.getX()));
+                            float overlapY = (float)(Math.min(enemy1.getY() + enemy1.getHeight(), enemy2.getY() + enemy2.getHeight())
+                                                   - Math.max(enemy1.getY(), enemy2.getY()));
 
                             if (overlapX < overlapY) {
-                                // Move horizontally
                                 if (enemy1.getX() < enemy2.getX()) {
                                     enemy1.setX(enemy1.getX() - overlapX / 2);
                                     enemy2.setX(enemy2.getX() + overlapX / 2);
@@ -273,7 +260,6 @@ public class MyGame extends ApplicationAdapter {
                                     enemy2.setX(enemy2.getX() - overlapX / 2);
                                 }
                             } else {
-                                // Move vertically
                                 if (enemy1.getY() < enemy2.getY()) {
                                     enemy1.setY(enemy1.getY() - overlapY / 2);
                                     enemy2.setY(enemy2.getY() + overlapY / 2);
@@ -287,18 +273,14 @@ public class MyGame extends ApplicationAdapter {
                 }
             }
 
+            // Enemy death / XP
             for (int i = 0; i < enemies.size(); i++) {
                 Enemy enemy = enemies.get(i);
-            
-                if (enemy.getHealth() <= 0) {
 
+                if (enemy.getHealth() <= 0) {
                     activeObjects.remove(enemy);
                     enemies.remove(i);
-
-                    // Reset enemy instead of removing for now to keep it simple
-                    enemy.setHealth(100);
-                    enemy.setX((float)Math.random() * 320); // Teleport him so he doesn't stay on player
-                    enemy.setY((float)Math.random() * 180);
+                    i--; // adjust index after removal
 
                     player.setxP(player.getxP() + 20);
 
@@ -308,24 +290,21 @@ public class MyGame extends ApplicationAdapter {
                     }
                 }
             }
-            //Note: Anything drawn must be between .begin() and .end()
-
 
             batch.begin();
             batch.draw(img, 0, 0);
 
             if (isLevelingUp) {
-                drawLevelUpScreen(); // Call the helper we made above
+                drawLevelUpScreen();
                 for (Enemy enemy : enemies) {
-                    enemy.setX(2147483647 );
+                    enemy.setX(2147483647);
                 }
             }
 
-            // TODO 6: Write a loop to iterate through activeObjects and call draw(batch).
-            for(GameObject game : activeObjects){
+            for (GameObject game : activeObjects) {
                 game.draw(batch);
             }
-            // hud section
+
             font.draw(batch, "Your Health: " + player.getHealth(), 5, 175);
             font.draw(batch, "XP: " + player.getxP() + "/" + xpThreshold, 5, 170);
             font.draw(batch, "Level: " + level, 5, 165);
@@ -337,22 +316,15 @@ public class MyGame extends ApplicationAdapter {
                 LevelUp();
             }
 
+            // Screen wrapping
             for (int i = activeObjects.size() - 1; i >= 0; i--) {
                 GameObject obj = activeObjects.get(i);
-                //loop to wrap objects around the screen
-                if (obj.getX() > 320 && obj.getX() < 600) {
-                    obj.setX(0);
-                }
-                if (obj.getY() > 180 && obj.getY() < 600) {
-                    obj.setY(0);
-                }
-                if (obj.getY() < 0) {
-                    obj.setY(180);
-                }
-                if (obj.getX() < 0) {
-                    obj.setX(320);
-                }
+                if (obj.getX() > 320 && obj.getX() < 600) obj.setX(0);
+                if (obj.getY() > 180 && obj.getY() < 600) obj.setY(0);
+                if (obj.getY() < 0) obj.setY(180);
+                if (obj.getX() < 0) obj.setX(320);
             }
+
             if (!objectsToAdd.isEmpty()) {
                 activeObjects.addAll(objectsToAdd);
                 objectsToAdd.clear();
@@ -361,15 +333,11 @@ public class MyGame extends ApplicationAdapter {
     }
 
 
-
-
     @Override
     public void resize(int width, int height) {
-    // 3. This is CRITICAL for the stretch to happen
-
-    viewport.update(width, height, true); 
+        viewport.update(width, height, true);
     }
-    
+
     @Override
     public void dispose() {
         batch.dispose();
@@ -377,83 +345,59 @@ public class MyGame extends ApplicationAdapter {
     }
 
     private void spawnEnemies(int count) {
-    for (int i = 0; i < count; i++) {
-        int spawnX = 0;
-        int spawnY = 0;
-        int padding = 30; // How far off-screen they start
-        
-        // Pick a random side: 0=Left, 1=Right, 2=Top, 3=Bottom
-        int side = (int)(Math.random() * 4);
+        for (int i = 0; i < count; i++) {
+            int spawnX = 0;
+            int spawnY = 0;
+            int padding = 30;
+            int side = (int)(Math.random() * 4);
 
-        switch (side) {
-            case 0: // Left side
-                spawnX = -padding;
-                spawnY = (int)(Math.random() * 180);
-                break;
-            case 1: // Right side
-                spawnX = 320 + padding;
-                spawnY = (int)(Math.random() * 180);
-                break;
-            case 2: // Top side
-                spawnX = (int)(Math.random() * 320);
-                spawnY = 180 + padding;
-                break;
-            case 3: // Bottom side
-                spawnX = (int)(Math.random() * 320);
-                spawnY = -padding;
-                break;
-        }
+            switch (side) {
+                case 0: spawnX = -padding;        spawnY = (int)(Math.random() * 180); break;
+                case 1: spawnX = 320 + padding;   spawnY = (int)(Math.random() * 180); break;
+                case 2: spawnX = (int)(Math.random() * 320); spawnY = 180 + padding;   break;
+                case 3: spawnX = (int)(Math.random() * 320); spawnY = -padding;        break;
+            }
 
-            Enemy newEnemy = new Enemy(spawnX, spawnY, 9, 9, 
-            "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", 
-            "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png", 
-            enemySpeed, enemyHealth, enemyAttackDamage);
+            Enemy newEnemy = new Enemy(spawnX, spawnY, 9, 9,
+                "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png",
+                "assets/Enemys/WalkerF1.png", "assets/Enemys/WalkerF2.png",
+                enemySpeed, enemyHealth, enemyAttackDamage);
 
             enemies.add(newEnemy);
-            objectsToAdd.add(newEnemy); 
+            objectsToAdd.add(newEnemy);
         }
     }
 
-    // the HUD methods are here becuese i was lazzy
     public void LevelUp() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) ||
+           ((Gdx.input.getX() > 640) && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
+            if (damageLevelUp == 1) attackDamage  += (attackDamage * 0.1) + 5;
+            if (damageLevelUp == 2) attackCooldown -= attackCooldown * 0.1;
+            if (damageLevelUp == 3) attackRange    += attackRange * 0.1;
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) ||
+                  ((Gdx.input.getX() < 640) && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
+            if (playerLevelUp == 1) health      += (health * 0.3) + 25;
+            if (playerLevelUp == 2) playerSpeed += (playerSpeed * 0.3) + 5;
+        }
 
-    // add the selection screen here
-    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || (Gdx.input.getX() > 640) && Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-        if (damageLevelUp == 1) {
-            attackDamage += (attackDamage * 0.1) + 5;
-        }
-        if (damageLevelUp == 2) {
-            attackCooldown -= attackCooldown * 0.1;
-        }
-        if (damageLevelUp == 3) {
-            attackRange += attackRange * 0.1;
-        }
-    } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || (Gdx.input.getX() < 640) && Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-        if (playerLevelUp == 1) {
-            health += (health * 0.3) + 25;
-        }
-        if (playerLevelUp == 2) {
-            playerSpeed += (playerSpeed * 0.3) + 5;
-        }
-    }
-    if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) ||
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT)  ||
+            Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+
             player.setX(160);
             level++;
             xpThreshold += 20;
             player.setxP(0);
-            
-            // Scale difficulty
+
             enemyCount += 1;
-            if (level % 5 == 0) { // Every 5 levels, increase enemy speed
+            if (level % 5 == 0) {
                 enemySpeed += 1;
                 enemyAttackDamage += 20;
             }
             enemyHealth += 15;
-            
-            
+
             spawnEnemies(enemyCount);
-            
-            // Reset the game state
+
             time = 1.0f;
             isLevelingUp = false;
             player.setHealth(health);
@@ -462,63 +406,86 @@ public class MyGame extends ApplicationAdapter {
             playerWeapon.setWidth(attackRange);
             playerWeapon.setHeight(attackRange);
             player.setSpeed(playerSpeed);
-            damageLevelUp = (int)(Math.random() * 3)+ 1;
-            playerLevelUp = (int)(Math.random() * 2)+ 1;
+            damageLevelUp = (int)(Math.random() * 3) + 1;
+            playerLevelUp = (int)(Math.random() * 2) + 1;
         }
     }
+
     public void resetGame() {
-        // Reset player stats
-        // hud section
-        hasGameStarted = false;
-        hasCharacterSelected = false;
-        level = 0;
-        xpThreshold = 100;
-        score = 0;
-        player.setxP(0);
-        attackDamage = 20;
-        attackCooldown = 10;
-        attackRange = 35;
-        enemyCount = 5;
-        enemySpeed = 2;
-        enemyHealth = 100;
+        // 1. Clear all enemies from activeObjects and the enemies list
+        for (Enemy enemy : enemies) {
+            activeObjects.remove(enemy);
+        }
+        enemies.clear();
+
+        // 2. Remove old player and weapon from activeObjects
+        activeObjects.remove(player);
+        activeObjects.remove(playerWeapon);
+
+        // 3. Reset all stats to defaults
+        level            = 0;
+        xpThreshold      = 100;
+        score            = 0;
+        attackDamage     = 20;
+        attackCooldown   = 10;
+        attackRange      = 35;
+        enemyCount       = 5;
+        enemySpeed       = 2;
+        enemyHealth      = 100;
         enemyAttackDamage = 15;
-        player.setHealth(150);
-        player.setSpeed(20);
-        hasGameStarted = false; // optional — remove if you want R to skip the start screen
-        hasGameEnded = false;
-        
-    }
-    private void drawLevelUpScreen() {
-    
-    if (damageLevelUp == 1){
-        batch.draw(WeponUpgradeImg, 160, 90-45); //damge
-    }
-    if (damageLevelUp == 2){
-        batch.draw(WeponSpeedUpgradeImg, 160, 90-45); //size
-    }
-    if (damageLevelUp == 3){
-        batch.draw(WeponSizeUpgradeImg, 160, 90-45); //speed
-    }
-    if (playerLevelUp == 1){
-        batch.draw(healthUpgradeImg, 160-90, 90-45);// health
-    }
-    if (playerLevelUp == 2){
-        batch.draw(SpeedUpgradeImg, 160-90, 90-45);// speed
+        playerSpeed      = 20;
+        health           = 150;
+        isLevelingUp     = false;
+        time             = 1.0f;
+        frame            = true;
+        damageLevelUp    = (int)(Math.random() * 3) + 1;
+        playerLevelUp    = (int)(Math.random() * 2) + 1;
+
+        // 4. Re-create the correct player and weapon based on last character choice
+        if (isDusk) {
+            player = new Dusk(160, 45, playerSpeed, health);
+        } else {
+            player = new Dawn(160, 45, playerSpeed, health);
+        }
+        player.setHitbox(5);
+        activeObjects.add(player);
+
+        if (isDusk) {
+            playerWeapon = new DuskWeapon(attackRange, attackRange, attackDamage, attackCooldown,
+                "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+        } else {
+            playerWeapon = new PlayerWeapon(attackRange, attackRange, attackDamage, attackCooldown,
+                "assets/Weapon/explosionF1.png", "assets/Weapon/explosionF2.png");
+        }
+        activeObjects.add(playerWeapon);
+
+        // 5. Spawn fresh enemies
+        spawnEnemies(enemyCount);
+
+        // 6. Send back to start screen
+        hasGameStarted      = false;
+        hasCharacterSelected = false;
+        hasGameEnded        = false;
     }
 
-    // 3. Draw the text instructions
-    
+    private void drawLevelUpScreen() {
+        if (damageLevelUp == 1) batch.draw(WeponUpgradeImg,      160,      90 - 45);
+        if (damageLevelUp == 2) batch.draw(WeponSpeedUpgradeImg, 160,      90 - 45);
+        if (damageLevelUp == 3) batch.draw(WeponSizeUpgradeImg,  160,      90 - 45);
+        if (playerLevelUp == 1) batch.draw(healthUpgradeImg,     160 - 90, 90 - 45);
+        if (playerLevelUp == 2) batch.draw(SpeedUpgradeImg,      160 - 90, 90 - 45);
     }
-    public void appendToFile(int input, String filePath)throws IOException {
-        
+
+    public void appendToFile(int input, String filePath) throws IOException {
         Files.write(
-            Paths.get(filePath), 
-            (input + System.lineSeparator()).getBytes(), 
-            StandardOpenOption.CREATE, 
+            Paths.get(filePath),
+            (input + System.lineSeparator()).getBytes(),
+            StandardOpenOption.CREATE,
             StandardOpenOption.APPEND
         );
         System.out.println("Saved\n");
     }
+
     public int getHighScore(String filePath) throws IOException {
         String content = new String(Files.readAllBytes(Paths.get(filePath)));
         String[] lines = content.split(System.lineSeparator());
@@ -526,11 +493,9 @@ public class MyGame extends ApplicationAdapter {
         for (String line : lines) {
             try {
                 int score = Integer.parseInt(line.trim());
-                if (score > maxScore) {
-                    maxScore = score;
-                }
+                if (score > maxScore) maxScore = score;
             } catch (NumberFormatException e) {
-                // Skip lines that aren't valid integers
+                // Skip non-integer lines
             }
         }
         return maxScore;
