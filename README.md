@@ -4,7 +4,7 @@ Welcome to Dusk & Dawn in is a top down 2D roguelite.
 
 ## Controls
 
-Depeneding on player dawn will atack automatically while dusk you need to left click.
+Depeneding on player dawn will attack automatically while dusk you need to left click.
 
 Dawns ablity will kill all enemys but will set your hp to one while dusk lets you dash in the driection that you are facing.
 
