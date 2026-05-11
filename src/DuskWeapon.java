@@ -2,13 +2,16 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Rectangle;
 
 public class DuskWeapon extends Weapon {
 
+    private Music attack= Gdx.audio.newMusic(Gdx.files.internal("assets/Sound/Slash.mp3"));;
     private double delayCounter = 0;
     private double attackSpeed = 100;
     private Rectangle pHitbox = DuskWeapon.this.getHitbox();
+    
 
     public DuskWeapon(int width, int height, int damage, double attackSpeed, String frame1, String frame2) {
         super(width, height, damage, attackSpeed, frame1, frame2);

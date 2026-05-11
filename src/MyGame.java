@@ -1,6 +1,7 @@
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -71,6 +72,8 @@ public class MyGame extends ApplicationAdapter {
     private int damageLevelUp = 1;
     private int highscore = level;
     private boolean frame = true;
+    private Music backGroundMusic;
+    
 
     // Track which character was last chosen so resetGame can recreate the right one
     private boolean isDusk = true;
@@ -81,6 +84,8 @@ public class MyGame extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
+
+        backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/Sound/AGlacierEventuallyFarts.mp3"));
 
         font = new BitmapFont();
         font.getData().setScale(0.4f);
@@ -122,6 +127,10 @@ public class MyGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        backGroundMusic.play();
+        backGroundMusic.setLooping(true);
+        backGroundMusic.setVolume(0.5f); // Range 0.0 to 1.0
+
         // STATE 1: Start Screen
         if (!hasGameStarted) {
             batch.begin();
@@ -150,6 +159,8 @@ public class MyGame extends ApplicationAdapter {
                 // Dusk
                 isDusk = true;
                 hasCharacterSelected = true;
+                playerSpeed = 30;
+                player.setSpeed(30);
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D) ||
                (Gdx.input.getX() > 640 && Gdx.input.isButtonPressed(Input.Buttons.RIGHT))) {
@@ -158,9 +169,11 @@ public class MyGame extends ApplicationAdapter {
                 activeObjects.remove(player);
                 player = new Dawn(160, 45, playerSpeed, health);
                 player.setHealth(300);
-                attackDamage = 50;
+                attackDamage = 99;
                 player.setHitbox(5);
                 activeObjects.add(player);
+                playerSpeed = 15;
+                player.setSpeed(15);
 
                 activeObjects.remove(playerWeapon);
                 playerWeapon = new PlayerWeapon(attackRange, attackRange, attackDamage, attackCooldown,
@@ -344,6 +357,7 @@ public class MyGame extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         font.dispose();
+        backGroundMusic.dispose();
     }
 
     private void spawnEnemies(int count) {

@@ -35,6 +35,12 @@ public class Dusk extends Player{
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.D)){
             setTexture("assets/DuskAssets/DuskDashR.png");
             setX(getX() + 5);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.W)){
+            setTexture("assets/DuskAssets/DuskDashR.png");
+            setY(getY() + 5);
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && Gdx.input.isKeyPressed(Input.Keys.S)){
+            setTexture("assets/DuskAssets/DuskDashR.png");
+            setY(getY() - 5);
         }
     }
 
