@@ -37,14 +37,16 @@ public class PlayerWeapon extends Weapon {
             if (this.getHitbox().overlaps(e.getHitbox())) {
                 e.setHealth(e.getHealth() - this.getDamage());
                 System.out.println("Hit enemy! Health: " + e.getHealth());
-                
+
+
             }
         }
 
         // 4. Reset timer AFTER checking all enemies
         delayCounter = 0;
+
     }
+
     }
-    
-    
+
 }

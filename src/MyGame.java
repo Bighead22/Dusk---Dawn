@@ -169,7 +169,7 @@ public class MyGame extends ApplicationAdapter {
                 activeObjects.remove(player);
                 player = new Dawn(160, 45, playerSpeed, health);
                 player.setHealth(300);
-                attackDamage = 99;
+                attackDamage = 1;
                 player.setHitbox(5);
                 activeObjects.add(player);
                 playerSpeed = 15;

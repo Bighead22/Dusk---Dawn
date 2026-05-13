@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class DuskWeapon extends Weapon {
 
-    private Music attack= Gdx.audio.newMusic(Gdx.files.internal("assets/Sound/Slash.mp3"));;
+    
     private double delayCounter = 0;
     private double attackSpeed = 100;
     private Rectangle pHitbox = DuskWeapon.this.getHitbox();
