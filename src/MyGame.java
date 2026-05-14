@@ -44,6 +44,8 @@ public class MyGame extends ApplicationAdapter {
     private int enemyHealth = 100;
     private int enemyAttackDamage = 15;
 
+    private Music slash;
+
     private Player player;
     private Weapon playerWeapon;
 
@@ -86,6 +88,7 @@ public class MyGame extends ApplicationAdapter {
         batch = new SpriteBatch();
 
         backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("assets/Sound/AGlacierEventuallyFarts.mp3"));
+        slash = Gdx.audio.newMusic(Gdx.files.internal("assets/Sound/Slash.mp3"));
 
         font = new BitmapFont();
         font.getData().setScale(0.4f);
@@ -131,6 +134,8 @@ public class MyGame extends ApplicationAdapter {
         backGroundMusic.setLooping(true);
         backGroundMusic.setVolume(0.5f); // Range 0.0 to 1.0
 
+        
+
         // STATE 1: Start Screen
         if (!hasGameStarted) {
             batch.begin();
@@ -169,7 +174,7 @@ public class MyGame extends ApplicationAdapter {
                 activeObjects.remove(player);
                 player = new Dawn(160, 45, playerSpeed, health);
                 player.setHealth(300);
-                attackDamage = 1;
+                attackDamage = 99;
                 player.setHitbox(5);
                 activeObjects.add(player);
                 playerSpeed = 15;
@@ -184,7 +189,7 @@ public class MyGame extends ApplicationAdapter {
             }
             return;
         }
-
+        
         // Frame-rate limiter
         try {
             Thread.sleep((1 / framerate) * 1000);
@@ -192,9 +197,11 @@ public class MyGame extends ApplicationAdapter {
             Thread.currentThread().interrupt();
         }
 
+
         if (level > highscore) {
             highscore = level;
         }
+
 
         health = player.getHealth();
         player.setHealth(health);
@@ -240,7 +247,17 @@ public class MyGame extends ApplicationAdapter {
 
         } else {
 
+
+            double delayCounter = 0;
             double deltaTime = ((double) Gdx.graphics.getDeltaTime() * time);
+            delayCounter += Gdx.graphics.getDeltaTime();
+
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && isDusk){
+                slash.play();
+                slash.setVolume(0.25f); // Range 0.0 to 1.0
+                System.out.println("sound");
+            }
+
 
             for (GameObject game : activeObjects) {
                 game.move(deltaTime);
@@ -252,6 +269,8 @@ public class MyGame extends ApplicationAdapter {
                 enemies.forEach(enemy -> enemy.getkilled());
                 enemies.forEach(enemy -> enemy.move(deltaTime, player));
                 enemies.forEach(enemy -> enemy.attack(player));
+
+
             }
 
             // Enemy-enemy separation
@@ -358,6 +377,7 @@ public class MyGame extends ApplicationAdapter {
         batch.dispose();
         font.dispose();
         backGroundMusic.dispose();
+        slash.dispose();
     }
 
     private void spawnEnemies(int count) {
